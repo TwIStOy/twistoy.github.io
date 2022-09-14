@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;oshi-moyu&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="feelings">feelings</a></span>
+          
+            <span><a href="japanese-literature">japanese-literature</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Reading">Reading</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2022-09-12">Sep 12, 2022</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;oshi-moyu&#x2F;">
+      推し、燃ゆ
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>（全部的内容都是零碎的，没头没尾的，写给自己的，当下的想法，没想是个文章，就这样吧）</p>
+<blockquote>
+<p>仅仅是起床，床单就会皱起来；仅仅是活着，人也会皱起来。和其他人说话需要绷紧理论上的肉，身体脏了需要泡澡，指甲长长了需要剪掉。最低限度的活着，也并非绞尽力气就一定能做到。我总是在完成最低限度之前，意识和身体就断联了。</p>
+</blockquote>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;oshi-moyu&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpo&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++20">c++20</a></span>
+          
+            <span><a href="ranges">ranges</a></span>
+          
+            <span><a href="cpo">cpo</a></span>
+          
+            <span><a href="niebloid">niebloid</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2022-09-06">Sep 06, 2022</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpo&#x2F;">
+      Customization Point Object
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="jie-jue-shi-yao-wen-ti">解决什么问题？</h1>
+<p>标题是要聊一下 C++20 带来的一些新的很有意思的新机制，或者说是新轮子。
+用来解决库函数或者一些通用函数定制用户类型的行为的抽象。
+比如，我现在要实现一个通用的算法：</p>
+<pre><code>template&lt;typename T&gt;
+void foo(T&amp; vec);
+</code></pre>
+<p>我可能需要我的参数 <code>vec</code> 的类型 <code>T</code>。可以拿到他的两个对应迭代器和大小。（这里只是举个例子）
+在这个时候，就是我的通用函数需要定制用户类型的行为。或者说，需要用户的类型提供我需要的能力。
+对于这样的每一个对用户能力的要求，被称为一个 <strong>定制点</strong>。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpo&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2020-zong-jie&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="summary">summary</a></span>
+          
+            <span><a href="yearly">yearly</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2021-01-06">Jan 06, 2021</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2020-zong-jie&#x2F;">
+      2020 总结
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h2 id="0x01">0x01</h2>
+<p>平时其实都没有写类似年终总结这类东西的习惯的，但是今年就想了想，还是想搞点什么东西。
+或者是记下来我这个和平时也没啥区别的一年？<br />
+不过有一说一，我这去年的总结来的还有点晚？hhh</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2020-zong-jie&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="build-system">build-system</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2020-09-14">Sep 14, 2020</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;">
+      搞了个 C++ 构建系统
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>我平时的工作内容是开发在服务端上运行的网络程序，主要语言是 C++，并且几乎全部跑在统一的机器环境上。所以我们一直以来都在使用一套简单从 <a href="https://github.com/chen3feng/blade-build">blade-build</a> 魔改来的编译系统。这个系统的本质是一个 <code>Unix Makefile</code> 的生成器，这个生成器使用 <code>Python2</code> 编写，代码有点难以维护。（毕竟使用动态语言的东西就是这样，出活还是很快的，但是时间一长了，代码就变的很难维护。因为后来的人，很难完全理解其中每个变量的类型，这对于我这种长期写静态强类型语言的人来说，是很痛苦的。）</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="engineering">engineering</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2020-06-01">Jun 01, 2020</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;">
+      软件设计哲学(NOTE)
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="red-flags">RED FLAGS</h1>
+<h2 id="shallow-module">Shallow Module</h2>
+<p>A shallow module is one whose interface is complicated relative to the functionality it provides. Shallow modules don’t help much in the
+battle against complexity, because the benefit they provide (not having to learn about how they work internally) is negated by the cost
+of learning and using their interfaces. Small modules tend to be shallow.</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+
+<div id="post-footer">
+  <hr />
+  
+  <span>Previous</span>
+  
+  <span style="color: #fe2"> | 1 / 8 | </span>
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;2&#x2F;">Next</a>
+  
+  <hr />
+</div>
+
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

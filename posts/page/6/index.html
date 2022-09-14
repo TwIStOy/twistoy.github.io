@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;zip-implementtation-for-cpp&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++11">c++11</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+            <span><a href="zip">zip</a></span>
+          
+            <span><a href="python">python</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-04-05">Apr 05, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;zip-implementtation-for-cpp&#x2F;">
+      C++ zip实现
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>最近心血来潮想在C++里实现一些像在python里一样好用的小组件，主要是希望充分发挥<code>C++11</code>里<code>for</code>循环的威力。在完成了<code>enumerate</code>之后，在<code>zip</code>的完成上用了比较久的时间。</p>
+<p>在这里记录下来自己对<code>zip</code>的简单实现。</p>
+<p>主要就用了模板递归，结合了一些<code>C++11</code>的新特性完成的。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;zip-implementtation-for-cpp&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-12-09">Dec 09, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;">
+      C++ Template
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="han-shu-mo-ban">函数模板</h1>
+<h2 id="shi-yong-mo-ban">使用模板</h2>
+<p>模板被编译了两次，分别发生在：</p>
+<ol>
+<li>实例化之前，先检查模板代码本身，查看语法是否正确。</li>
+<li>在实例化旗舰，检查模板代码，查看是否所有的调用都有效。</li>
+</ol>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="acm">acm</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-10-19">Oct 19, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;">
+      2015 长春站亚洲区 &amp;&amp; 退役总结
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h2 id="zai-lu-shang">在路上</h2>
+<p>我居然到去长春比赛之前才知道，哈尔滨居然离长春这么近。【好吧，不要在意我的地理，我一直以为去长春至少要做个飞机什么的呢，23333。没想到残酷的事实告诉我，长春比牡丹江还近66666666。】
+去的时候的路上在刷微博的时候，居然发现自己和SDL在一辆车上，找她扯淡扯到了快下车，所以在去的时候的车上也没感到什么痛苦，就一下子到了。
+回来的时候我在努力的编故事【hhh，我要给小鲜肉们安利舰娘hhhhh】，偶尔和小伙伴们扯一会，可能是比完赛大家心情都还不错的原因， 气氛也是非常的好，虽然火车时间比去的时候长了一个小时，可是也够开心了啊。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-provience-and-northeast-contest-summary&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="acm">acm</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-09-01">Sep 01, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-provience-and-northeast-contest-summary&#x2F;">
+      2015 省赛、东北赛总结
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="part1-sheng-sai">Part1. 省赛</h1>
+<p>先来吐槽下工大，热身赛之前大家都在外面站着连个休息的地方都没有，整个人都被冻傻了…正赛那天早上还好（其实我感觉主要是天比较给力，比较暖和，也可能是我机智的穿上了棉袄的原因…2333。）<br />
+然后就是题目的部分了，所有题目主要就是题面比较难读吧，绝对是的。我们一致认为着出题人的英语绝对有问题，然后脑洞有点大…（绝对脑洞巨大…）</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-provience-and-northeast-contest-summary&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;c-11-perfect-forward&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++11">c++11</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+            <span><a href="tips">tips</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-09-01">Sep 01, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;c-11-perfect-forward&#x2F;">
+      c++11 完美转发+变长参数
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p><strong>完美转发</strong>(argument forwarding):</p>
+<blockquote>
+<p>给定一个函数<code>F(a1, a2, ..., an)</code>，要写一个函数G，接受和F相同的参数并传递给F。<br />
+这里有三点要求：<br />
+1. 能用F的地方，G也一定能用。<br />
+2. 不能用F的敌方，G也一定不能用。<br />
+3. 转发的开销应该是线性增长的。</p>
+</blockquote>
+<p>这里在C++11出现之前，人们做了很多尝试。就出现了很多的替代方案，直到C++11出现之后，才有了一个完美的解决方案。</p>
+<h3 id="fei-chang-liang-zuo-zhi-yin-yong-zhuan-fa">非常量左值引用转发</h3>
+<pre><code>    template&lt;typename T&gt;
+    void g(T1&amp; t) {
+        return f(t);
+    }
+    
+    void f(int t) {}
+</code></pre>
+<p>这里不能传入<strong>非常量右值</strong>（<code>g(1)</code>）。</p>
+<h3 id="chang-liang-zuo-zhi-yin-yong">常量左值引用</h3>
+<pre><code>    template&lt;typename T&gt;
+    void g(const T1&amp; t) {
+        return f(t);
+    }
+    
+    void f(int&amp; t) {}
+</code></pre>
+<p>常量左值引用在这里也挂掉了，这里函数_g_是没法把常量左值引用传递给非常量左值引用的。</p>
+<h3 id="fei-chang-liang-zuo-zhi-yin-yong-chang-liang-zuo-zhi-yin-yong">非常量左值引用+常量左值引用</h3>
+<p>这种方案就是给每个参数写常量左值和非常量左值两个版本的，这个方案的重载函数个数是指数型增长的，在参数多的时候会挂掉的。而且，在传入非常量参数的时候，可能会引发二义性。</p>
+<h3 id="chang-liang-zuo-zhi-yin-yong-const-cast">常量左值引用+const_cast</h3>
+<pre><code>    template&lt;class T&gt;
+    void g(const T&amp; t) {
+        return f(const_cast&lt;T&amp;&gt;(t));
+    }
+</code></pre>
+<p>这里看起来好像解决了方案2里的问题。可是这种转发变量被修改了，不是我们想要的结果。</p>
+<h3 id="fei-chang-liang-zuo-zhi-yin-yong-xiu-gai-de-can-shu-tui-dao-gui-ze">非常量左值引用+修改的参数推导规则</h3>
+<pre><code>    template&lt;typename T&gt;
+    void f(T&amp; t){
+        std::cout &lt;&lt; 1 &lt;&lt; std::endl;
+    }
+    
+    void f(const long &amp;){
+        std::cout &lt;&lt; 2 &lt;&lt; std::endl;
+    }
+    
+    int main(){
+        f(5);&#x2F;&#x2F; prints 2 under the current rules, 1 after the change
+        int const n(5);
+        f(n);&#x2F;&#x2F; 1 in both cases
+    }
+</code></pre>
+<p>这里会对原有代码有破坏。</p>
+<h3 id="you-zhi-yin-yong">右值引用</h3>
+<pre><code>    template&lt;typename T&gt;
+    void g(T&amp;&amp; t) {
+        return f(t);
+    }
+</code></pre>
+<p>这里不能g不能接受一个左值，因为不能把一个左值传递给一个右值引用。</p>
+<h3 id="you-zhi-yin-yong-xiu-gai-de-can-shu-tui-dao-gui-ze-zhuan-fa">右值引用+修改的参数推导规则转发</h3>
+<p>引用叠加原则：</p>
+<table><thead><tr><th>TR的类型定义</th><th>声明v的类型</th><th>v的实际类型</th></tr></thead><tbody>
+<tr><td>T&amp;</td><td>TR</td><td>A&amp;</td></tr>
+<tr><td>T&amp;</td><td>TR&amp;</td><td>A&amp;</td></tr>
+<tr><td>T&amp;</td><td>TR&amp;&amp;</td><td>A&amp;</td></tr>
+<tr><td>T&amp;&amp;</td><td>TR</td><td>A&amp;&amp;</td></tr>
+<tr><td>T&amp;&amp;</td><td>TR&amp;</td><td>A&amp;</td></tr>
+<tr><td>T&amp;&amp;</td><td>TR&amp;&amp;</td><td>A&amp;&amp;</td></tr>
+</tbody></table>
+<p>这里如果只去修改对右值引用推导规则，这样就避免对原有的代码的破坏。</p>
+<pre><code>    template&lt;typename T&gt;
+    void g(T&amp;&amp; t) {
+        return f(std::forward&lt;T&gt;(t));
+    }
+</code></pre>
+<p>这里已经可以处理好转发部分了。可是我还是不满意，我希望可以更完美一点，就是无论什么参数，多少参数都可以。这里要结合C++11的变长参数模板来完成。</p>
+<pre><code>    template&lt;typename... Args&gt;
+    void g(Args... arg) {
+        return f(std::forward(arg)...);
+    }
+</code></pre>
+<p>这里包括了变长参数包的展开，这里还可以用<code>sizeof...(Args)</code>来获取变长参数的个数。</p>
+<hr />
+<p>参考：</p>
+<ol>
+<li><a href="http://stackoverflow.com/questions/6486432/variadic-template-templates-and-perfect-forwarding">c++ - How would one call std::forward on all arguments in a variadic function? - Stack Overflow</a></li>
+<li><a href="http://stackoverflow.com/questions/6829241/perfect-forwarding-whats-it-all-about">c++11 - Perfect forwarding - what's it all about? - Stack Overflow</a></li>
+<li><a href="http://stackoverflow.com/questions/6486432/variadic-template-templates-and-perfect-forwarding">c++ - Variadic template templates and perfect forwarding - Stack Overflow</a></li>
+<li><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2002/n1385.htm">The Forwarding Problem: Arguments</a></li>
+<li><a href="http://zh.wikipedia.org/wiki/C%2B%2B11#.E5.8F.B3.E5.80.BC.E5.BC.95.E7.94.A8.E5.92.8Cmove.E8.AA.9E.E6.84.8F">C++11维基百科</a></li>
+</ol>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;c-11-perfect-forward&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+
+<div id="post-footer">
+  <hr />
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;5&#x2F;">Previous</a>
+  
+  <span style="color: #fe2"> | 6 / 8 | </span>
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;7&#x2F;">Next</a>
+  
+  <hr />
+</div>
+
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

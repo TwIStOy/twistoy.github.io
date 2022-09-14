@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="unittest">unittest</a></span>
+          
+            <span><a href="cLion">cLion</a></span>
+          
+            <span><a href="tips">tips</a></span>
+          
+            <span><a href="gtest">gtest</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-11-13">Nov 13, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;">
+      在 CLion 中配置 gtest
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>最近在学习 googletest 这个用于 C++ 的单元测试框架的时候，遇到了一个问题。就是希望可以在 CLion 中配置好一个制定项目的测试，然后由 CLion 运行并且给出一个结果。
+结果当然是成功了的，这篇文章主要就记录一下整个配置的过程，配置过程整体很简单，主要就是写 CMakeLists.txt 的过程（因为 CLion 使用 CMakeLists 管理整个 C++ 的项目）。</p>
+<h1 id="xiang-mu-mu-lu-jie-gou">项目目录结构</h1>
+<pre><code>+ project_home
+  + ext &#x2F;&#x2F; external library
+    + gtest &#x2F;&#x2F; google test framework
+	  - CMakeLists.txt
+  + include &#x2F;&#x2F; project headers
+  + src &#x2F;&#x2F; project source files
+  + test &#x2F;&#x2F; test files
+  - CMakeLists.txt
+</code></pre>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;two-ways-algorithm&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="algorithm">algorithm</a></span>
+          
+            <span><a href="string">string</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-09-16">Sep 16, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;two-ways-algorithm&#x2F;">
+      Two Ways Algorithm
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>Two Ways Algorithm 是一个用于字符串匹配的算法，算法类似 KMP 会返回所有 pattern 出现在 text 里的位置。但是和 KMP 不同的是 two ways algorithm 只使用常数大小的额外空间。</p>
+<p>算法使用 \(O(m)\) 的时间预处理，并且可以在 \(O(n)\) 时间完成匹配，在最差的情况下会遍历 text 串两次。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;two-ways-algorithm&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="rust">rust</a></span>
+          
+            <span><a href="ownership system">ownership system</a></span>
+          
+            <span><a href="language">language</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-08-31">Aug 31, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;">
+      Rust Ownership System
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="rust-ownership-system">Rust Ownership System</h1>
+<p>基于作用域和栈的内存管理是很符合直觉的，就像下面这样。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+	let i = 5;
+}
+</code></pre>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;garbage-collection-mark-sweep&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="reading">reading</a></span>
+          
+            <span><a href="garbage collection">garbage collection</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-08-27">Aug 27, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;garbage-collection-mark-sweep&#x2F;">
+      Garbage Collection: Mark-Sweep
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h4 id="1-2-automatic-dynamic-memory-management">1.2 Automatic dynamic memory management</h4>
+<p>原则上，回收器最终都会将所有不可达对象回收。</p>
+<ol>
+<li><em>追踪式回收</em> 引入 <strong>垃圾</strong> 这一具有明确判定标准的概念，但它不一定包含所有不再使用的对象。</li>
+<li>出于效率原因，某些对象可能不会被回收。</li>
+</ol>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;garbage-collection-mark-sweep&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="python">python</a></span>
+          
+            <span><a href="module">module</a></span>
+          
+            <span><a href="note">note</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2016-08-16">Aug 16, 2016</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;">
+      matplotlib基础
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="introduction">Introduction</h1>
+<p>matplotlib是一个很好用的可以画2D图的Python模块。它提供了很方便进行可视化数据的方案。下面是对matplotlib的使用进行了一个简单的记录。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+
+<div id="post-footer">
+  <hr />
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;4&#x2F;">Previous</a>
+  
+  <span style="color: #fe2"> | 5 / 8 | </span>
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;6&#x2F;">Next</a>
+  
+  <hr />
+</div>
+
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

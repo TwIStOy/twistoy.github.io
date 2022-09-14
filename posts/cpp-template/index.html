@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2015-12-09" id="date">Dec 09, 2015</time></span>
+      
+      
+    </div>
+    <h1>C++ Template</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="han-shu-mo-ban">函数模板</h1>
+<h2 id="shi-yong-mo-ban">使用模板</h2>
+<p>模板被编译了两次，分别发生在：</p>
+<ol>
+<li>实例化之前，先检查模板代码本身，查看语法是否正确。</li>
+<li>在实例化旗舰，检查模板代码，查看是否所有的调用都有效。</li>
+</ol>
+<span id="continue-reading"></span><h2 id="mo-ban-de-tui-dao">模板的推导</h2>
+<p>在模板推导的过程中，不会进行自动的类型转换，每个类型都必须正确的匹配。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T&gt;
+inline T const&amp; max (T const&amp; a, T const&amp; b);
+
+max(4, 7); &#x2F;&#x2F; OK: 两个实参的烈性都是int
+max(4, 4.2); &#x2F;&#x2F; ERROR: 第二个实参的类型是double，这里没有把第一个int自动升级成了double
+</code></pre>
+<p>有三种方法来处理：</p>
+<ol>
+<li>对实参进行强制类型转换，使它们可以相互匹配。<code>max(static_cast&lt;double&gt;(4), 4.2);</code></li>
+<li>显示制定T的类型。<code>max&lt;double&gt;(4, 4.2);</code></li>
+<li>制定两个参数可以有不同的类型。</li>
+</ol>
+<h2 id="mo-ban-can-shu">模板参数</h2>
+<p>在函数模板内部，不能制定缺省的模板实参。</p>
+<h2 id="zhong-zai-han-shu-mo-ban">重载函数模板</h2>
+<p>函数的所有重载版本的声明都应该位于该函数被调用的位置之前。</p>
+<h1 id="lei-mo-ban">类模板</h1>
+<h2 id="lei-mo-ban-de-te-hua">类模板的特化</h2>
+<p>如果要特化一个类模板，还要特化该类模板的所有成员函数。虽然也可以只特化某个成员函数，但这个做法并没有特化整个类，也就没有特化整个类模板。</p>
+<h2 id="ju-bu-te-hua">局部特化</h2>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T&gt;
+class MyClass&lt;T, T&gt;;
+
+template&lt;typename T&gt;
+class MyClass&lt;T, int&gt;;
+
+template&lt;typename T1, typename T2&gt;
+class MyClass&lt;T1*, T2*&gt;;
+</code></pre>
+<p>有多个局部特化同等程度的匹配某个声明的时候，那么该声明具有二义性：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">MyClass&lt;int, int&gt; m;
+&#x2F;&#x2F; MyClass&lt;T, T&gt;, MyClass&lt;T, int&gt;
+MyClass&lt;int*, int*&gt; m;
+&#x2F;&#x2F; MyClass&lt;T, T&gt;, MyClass&lt;T1*, T2*&gt;
+</code></pre>
+<p>为了解决第二种二义性，可以提供一个指向相同类型指针的特化：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T&gt;
+class MyClass&lt;T*, T*&gt;;
+</code></pre>
+<h2 id="que-sheng-mo-ban-shi-can">缺省模板实参</h2>
+<p>像指定一个函数的缺省实参一样。</p>
+<h1 id="fei-lei-xing-mo-ban-can-shu">非类型模板参数</h1>
+<p>对于函数模板和类模板，模板参数并不局限于类型，普通纸也可以作为模板参数。</p>
+<h2 id="fei-lei-xing-mo-ban-can-shu-de-xian-zhi">非类型模板参数的限制</h2>
+<p>非类型模板参数可以是常整数（包括枚举值），或者指向外部链接对象的指针。</p>
+<p><strong>浮点数和类对象</strong> 是不允许作为非类型模板参数的。</p>
+<h1 id="ji-qiao-xing-ji-chu-zhi-shi">技巧性基础知识</h1>
+<h2 id="guan-jian-zi-typename">关键字 <code>typename</code></h2>
+<p>当某个依赖于模板参数的名称是一个类型时，就应该使用 <code>typename</code>。</p>
+<h3 id="template-gou-zao"><code>.template</code> 构造</h3>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template &lt;int N&gt;
+void printBitset (std::bitset&lt;N&gt; const&amp; bs) {
+    std::cout &lt;&lt; bs.template to_string&lt;char, char_traits&lt;char&gt;, allocator&lt;char&gt; &gt;();
+}
+</code></pre>
+<p>用 <code>template</code> 去修饰后面的 <code>to_string</code> 的显式实例化模板版本的 <code>&lt;</code> ，不是数学上的小于号，而是模板实参列表的起始符号。</p>
+<h2 id="shi-yong-this">使用 <code>this-&gt;</code></h2>
+<p>对于具有基类的类模板，自身使用名称 <code>x</code> 并不一定等于 <code>this-&gt;x</code>。即使该 <code>x</code> 是从基类继承获得的。</p>
+<blockquote>
+<p>对于那些在基类中声明，并且依赖于模板参数的符号（函数或者变量等），你应该在他们前面使用<code>this-&gt;</code>或者<code>Base&lt;T&gt;::</code>。如果希望完全避免不确定性，你可以限定所有的成员的访问。</p>
+</blockquote>
+<h2 id="cheng-yuan-mo-ban">成员模板</h2>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T&gt;
+class Stack {
+    ...
+    template &lt;typename T2&gt;
+    Stack&lt;T&gt;&amp; operator = (Stack&lt;T2&gt; const&amp;);
+}
+</code></pre>
+<blockquote>
+<p>对于类模板而言，只有被调用的函数才会被实例化。</p>
+</blockquote>
+<h2 id="mo-ban-de-mo-ban-can-shu">模板的模板参数</h2>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T, template &lt;typename ELEM&gt; class CONT = std::deque&gt;
+class Stack;
+</code></pre>
+<ul>
+<li>在上面那段代码中第一行的 <code>class</code> 是不能和 <code>typename</code> 互换的，因为这里是为了定义一个类，而不是表示一个类型。</li>
+<li>没有用到上面的 <code>ELEM</code> 参数，所以可以省略不写。</li>
+<li><strong>函数模板不支持模板的模板参数。</strong></li>
+<li><strong>模板的模板实参</strong>必须精确的匹配。匹配时并不会考虑“模板的模板实参”的缺省模板实参。</li>
+</ul>
+<h3 id="mo-ban-de-shi-can-pi-pei">模板的实参匹配</h3>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T,
+            template &lt;typename ELEM,
+                        typename ALLOC = std::allocator&lt;ELEM&gt; &gt; class CONT = std::deque&gt;
+class Stack;
+</code></pre>
+<h2 id="ling-chu-shi-hua">零初始化</h2>
+<p>希望对所有的对象都用缺省构造函数初始化。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template &lt;typename T&gt;
+void foo() {
+    T x = T();
+}
+</code></pre>
+<p>对于类模板，需要把所有数据成员的缺省构造函数在这个类的缺省构造函数中调用。</p>
+<h2 id="zi-fu-chuan-zuo-wei-han-shu-mo-ban-de-shi-can">字符串作为函数模板的实参</h2>
+<p>由于长度的区别，有些字符串属于不同的数据类型。<code>apple</code> 和 <code>peach</code>，具有相同的类型 <code>char const[6]</code>，然而 <code>tomato</code> 的类型是 <code>char const[7]</code>。如果使用的是引用类型的话，在实例化模板的时候，就会出现类型不同的问题。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template &lt;typename T&gt;
+inline T const&amp; max (T const&amp; a, T const&amp; b) {
+    return a &lt; b ? b : a;
+}
+
+::max(&quot;apple&quot;, &quot;peach&quot;); &#x2F;&#x2F; ok
+::max(&quot;apple&quot;, &quot;tomato&quot;);
+</code></pre>
+<p>但是在这里使用非引用类型的参数，就是可以的。因为如果使用非引用类型的参数，在这里会进行一个数组到指针类型的转换（这个转型过程通常被叫做decay）。</p>
+<p>字符数组和字符串指针不匹配的问题，根据不同的情况，可以：</p>
+<ul>
+<li>使用非引用参数，取代引用参数。<strong>（可能会导致无用的拷贝。）</strong></li>
+<li>进行重载。编写接受引用和非引用参数的两个版本。<strong>（可能导致二义性）</strong></li>
+<li>对具体类型进行重载。</li>
+<li>重载数组类型。比如：</li>
+</ul>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template &lt;typename T, int N, int M&gt;
+T const * max (T const (&amp;a)[N], T const (&amp;b)[M]) {
+    return a &lt; b ? b : a;
+}
+</code></pre>
+<ul>
+<li>强制要求应用使用显式的类型转换。</li>
+</ul>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/cpp-template/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "cpp-template"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#han-shu-mo-ban">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 函数模板</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#shi-yong-mo-ban">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> 使用模板</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#mo-ban-de-tui-dao">
+    <span class="toc-number">&nbsp;1.2.</span>
+    <span class="toc-text"> 模板的推导</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#mo-ban-can-shu">
+    <span class="toc-number">&nbsp;1.3.</span>
+    <span class="toc-text"> 模板参数</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#zhong-zai-han-shu-mo-ban">
+    <span class="toc-number">&nbsp;1.4.</span>
+    <span class="toc-text"> 重载函数模板</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#lei-mo-ban">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> 类模板</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#lei-mo-ban-de-te-hua">
+    <span class="toc-number">&nbsp;2.1.</span>
+    <span class="toc-text"> 类模板的特化</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#ju-bu-te-hua">
+    <span class="toc-number">&nbsp;2.2.</span>
+    <span class="toc-text"> 局部特化</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#que-sheng-mo-ban-shi-can">
+    <span class="toc-number">&nbsp;2.3.</span>
+    <span class="toc-text"> 缺省模板实参</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#fei-lei-xing-mo-ban-can-shu">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> 非类型模板参数</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#fei-lei-xing-mo-ban-can-shu-de-xian-zhi">
+    <span class="toc-number">&nbsp;3.1.</span>
+    <span class="toc-text"> 非类型模板参数的限制</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#ji-qiao-xing-ji-chu-zhi-shi">
+    <span class="toc-number">4.</span>
+    <span class="toc-text"> 技巧性基础知识</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#guan-jian-zi-typename">
+    <span class="toc-number">&nbsp;4.1.</span>
+    <span class="toc-text"> 关键字 typename</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#template-gou-zao">
+    <span class="toc-number">&nbsp;&nbsp;4.1.1.</span>
+    <span class="toc-text"> .template 构造</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#shi-yong-this">
+    <span class="toc-number">&nbsp;4.2.</span>
+    <span class="toc-text"> 使用 this-&gt;</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#cheng-yuan-mo-ban">
+    <span class="toc-number">&nbsp;4.3.</span>
+    <span class="toc-text"> 成员模板</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#mo-ban-de-mo-ban-can-shu">
+    <span class="toc-number">&nbsp;4.4.</span>
+    <span class="toc-text"> 模板的模板参数</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#mo-ban-de-shi-can-pi-pei">
+    <span class="toc-number">&nbsp;&nbsp;4.4.1.</span>
+    <span class="toc-text"> 模板的实参匹配</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#ling-chu-shi-hua">
+    <span class="toc-number">&nbsp;4.5.</span>
+    <span class="toc-text"> 零初始化</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-template&#x2F;#zi-fu-chuan-zuo-wei-han-shu-mo-ban-de-shi-can">
+    <span class="toc-number">&nbsp;4.6.</span>
+    <span class="toc-text"> 字符串作为函数模板的实参</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

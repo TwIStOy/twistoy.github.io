@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2016-08-16" id="date">Aug 16, 2016</time></span>
+      
+      
+    </div>
+    <h1>matplotlib基础</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="introduction">Introduction</h1>
+<p>matplotlib是一个很好用的可以画2D图的Python模块。它提供了很方便进行可视化数据的方案。下面是对matplotlib的使用进行了一个简单的记录。</p>
+<span id="continue-reading"></span><h1 id="simple-plot">Simple plot</h1>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import numpy as np
+
+X = np.linspace(-np.pi, np.pi, 256,endpoint=True)
+C,S = np.cos(X), np.sin(X)
+</code></pre>
+<p>这里的<code>X</code>是一个数组，里面有256个数，范围是\([-\pi,\pi]\)。接下来的<code>C</code>和<code>S</code>是分别是cos值和sin值。</p>
+<h2 id="ji-chu-hui-tu">基础绘图</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.linspace(-np.pi, np.pi, 256, endpoint=True)
+C,S = np.cos(X), np.sin(X)
+
+plt.plot(X,C)
+plt.plot(X,S)
+
+plt.show()
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_1.png" alt="" /></p>
+<h2 id="dui-tu-jin-xing-yi-xie-she-zhi">对图进行一些设置</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python"># Imports
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create a new figure of size 8x6 points, using 100 dots per inch
+plt.figure(figsize=(8,6), dpi=80)
+
+# Create a new subplot from a grid of 1x1
+plt.subplot(111)
+
+X = np.linspace(-np.pi, np.pi, 256,endpoint=True)
+C,S = np.cos(X), np.sin(X)
+
+# Plot cosine using blue color with a continuous line of width 1 (pixels)
+plt.plot(X, C, color=&quot;blue&quot;, linewidth=1.0, linestyle=&quot;-&quot;)
+
+# Plot sine using green color with a continuous line of width 1 (pixels)
+plt.plot(X, S, color=&quot;green&quot;, linewidth=1.0, linestyle=&quot;-&quot;)
+
+# Set x limits
+plt.xlim(-4.0,4.0)
+
+# Set x ticks
+plt.xticks(np.linspace(-4,4,9,endpoint=True))
+
+# Set y limits
+plt.ylim(-1.0,1.0)
+
+# Set y ticks
+plt.yticks(np.linspace(-1,1,5,endpoint=True))
+
+# Save figure using 72 dots per inch
+# savefig(&quot;..&#x2F;figures&#x2F;exercice_2.png&quot;,dpi=72)
+
+# Show result on screen
+plt.show()
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_2.png" alt="" /></p>
+<h2 id="gai-bian-yan-se-he-xian-de-cu-xi">改变颜色和线的粗细</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">plt.figure(figsize=(10,6), dpi=80)
+plt.plot(X, C, color=&quot;blue&quot;, linewidth=2.5, linestyle=&quot;-&quot;)
+plt.plot(X, S, color=&quot;red&quot;,  linewidth=2.5, linestyle=&quot;-&quot;)
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_3.png" alt="" /></p>
+<h2 id="she-zhi-xzhou-he-yzhou-de-fan-wei">设置X轴和Y轴的范围</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">plt.xlim(X.min()*1.1, X.max()*1.1)
+plt.ylim(C.min()*1.1, C.max()*1.1)
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_4.png" alt="" /></p>
+<h2 id="she-zhi-zuo-biao-zhou-de-ke-du">设置坐标轴的刻度</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">plt.xticks( [-np.pi, -np.pi&#x2F;2, 0, np.pi&#x2F;2, np.pi])
+plt.yticks([-1, 0, +1])
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_5.png" alt="" /></p>
+<h2 id="she-zhi-zuo-biao-zhou-ke-du-shang-de-zi">设置坐标轴刻度上的字</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">plt.xticks([-np.pi, -np.pi&#x2F;2, 0, np.pi&#x2F;2, np.pi],[r&#x27;$-\pi$&#x27;, r&#x27;$-\pi&#x2F;2$&#x27;, r&#x27;$0$&#x27;, r&#x27;$+\pi&#x2F;2$&#x27;, r&#x27;$+\pi$&#x27;])
+
+plt.yticks([-1, 0, +1],[r&#x27;$-1$&#x27;, r&#x27;$0$&#x27;, r&#x27;$+1$&#x27;])
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_6.png" alt="" /></p>
+<h2 id="yi-dong-zuo-biao-zhou">移动坐标轴</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">ax = plt.gca()
+ax.spines[&#x27;right&#x27;].set_color(&#x27;none&#x27;)
+ax.spines[&#x27;top&#x27;].set_color(&#x27;none&#x27;)
+ax.xaxis.set_ticks_position(&#x27;bottom&#x27;)
+ax.spines[&#x27;bottom&#x27;].set_position((&#x27;data&#x27;,0))
+ax.yaxis.set_ticks_position(&#x27;left&#x27;)
+ax.spines[&#x27;left&#x27;].set_position((&#x27;data&#x27;,0))
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_7.png" alt="" /></p>
+<h2 id="wei-tu-tian-jia-shuo-ming">为图添加说明</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">plt.plot(X, C, color=&quot;blue&quot;, linewidth=2.5, linestyle=&quot;-&quot;, label=&quot;cosine&quot;)
+plt.plot(X, S, color=&quot;red&quot;,  linewidth=2.5, linestyle=&quot;-&quot;, label=&quot;sine&quot;)
+
+plt.legend(loc=&#x27;upper left&#x27;, frameon=False)
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_8.png" alt="" /></p>
+<h2 id="tian-jia-zhu-shi">添加注释</h2>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">t = 2*np.pi&#x2F;3
+plt.plot([t,t],[0,np.cos(t)], color =&#x27;blue&#x27;, linewidth=1.5, linestyle=&quot;--&quot;)
+plt.scatter([t,],[np.cos(t),], 50, color =&#x27;blue&#x27;)
+
+plt.annotate(r&#x27;$\sin(\frac{2\pi}{3})=\frac{\sqrt{3}}{2}$&#x27;,
+             xy=(t, np.sin(t)), xycoords=&#x27;data&#x27;,
+             xytext=(+10, +30), textcoords=&#x27;offset points&#x27;, fontsize=16,
+             arrowprops=dict(arrowstyle=&quot;-&gt;&quot;, connectionstyle=&quot;arc3,rad=.2&quot;))
+
+plt.plot([t,t],[0,np.sin(t)], color =&#x27;red&#x27;, linewidth=1.5, linestyle=&quot;--&quot;)
+plt.scatter([t,],[np.sin(t),], 50, color =&#x27;red&#x27;)
+
+plt.annotate(r&#x27;$\cos(\frac{2\pi}{3})=-\frac{1}{2}$&#x27;,
+             xy=(t, np.cos(t)), xycoords=&#x27;data&#x27;,
+             xytext=(-90, -50), textcoords=&#x27;offset points&#x27;, fontsize=16,
+             arrowprops=dict(arrowstyle=&quot;-&gt;&quot;, connectionstyle=&quot;arc3,rad=.2&quot;))
+</code></pre>
+<p><img src="http://www.labri.fr/perso/nrougier/teaching/matplotlib/figures/exercice_9.png" alt="" /></p>
+<h1 id="see-also">See also</h1>
+<p><a href="http://www.labri.fr/perso/nrougier/teaching/numpy/numpy.html">Numpy</a>
+<a href="http://www.labri.fr/perso/nrougier/teaching/numpy.100/index.html">100 Numpy exercises</a>
+<a href="http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833">Ten simple rules for better figures</a></p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/matplotlib-basic/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "matplotlib-basic"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#introduction">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> Introduction</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#simple-plot">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> Simple plot</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#ji-chu-hui-tu">
+    <span class="toc-number">&nbsp;2.1.</span>
+    <span class="toc-text"> 基础绘图</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#dui-tu-jin-xing-yi-xie-she-zhi">
+    <span class="toc-number">&nbsp;2.2.</span>
+    <span class="toc-text"> 对图进行一些设置</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#gai-bian-yan-se-he-xian-de-cu-xi">
+    <span class="toc-number">&nbsp;2.3.</span>
+    <span class="toc-text"> 改变颜色和线的粗细</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#she-zhi-xzhou-he-yzhou-de-fan-wei">
+    <span class="toc-number">&nbsp;2.4.</span>
+    <span class="toc-text"> 设置X轴和Y轴的范围</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#she-zhi-zuo-biao-zhou-de-ke-du">
+    <span class="toc-number">&nbsp;2.5.</span>
+    <span class="toc-text"> 设置坐标轴的刻度</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#she-zhi-zuo-biao-zhou-ke-du-shang-de-zi">
+    <span class="toc-number">&nbsp;2.6.</span>
+    <span class="toc-text"> 设置坐标轴刻度上的字</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#yi-dong-zuo-biao-zhou">
+    <span class="toc-number">&nbsp;2.7.</span>
+    <span class="toc-text"> 移动坐标轴</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#wei-tu-tian-jia-shuo-ming">
+    <span class="toc-number">&nbsp;2.8.</span>
+    <span class="toc-text"> 为图添加说明</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#tian-jia-zhu-shi">
+    <span class="toc-number">&nbsp;2.9.</span>
+    <span class="toc-text"> 添加注释</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;matplotlib-basic&#x2F;#see-also">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> See also</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

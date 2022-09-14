@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2016-08-31" id="date">Aug 31, 2016</time></span>
+      
+      
+    </div>
+    <h1>Rust Ownership System</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="rust-ownership-system">Rust Ownership System</h1>
+<p>基于作用域和栈的内存管理是很符合直觉的，就像下面这样。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+	let i = 5;
+}
+</code></pre>
+<span id="continue-reading"></span>
+<p>这里的变量 <code>i</code> 最后离开了作用域，然后内存被回收。</p>
+<p>而在下面这个例子里，变量被析构了两次。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+	let i = 5;
+    foo(i);
+}
+fn foo(i: i64) {
+	&#x2F;&#x2F; do something...
+}
+</code></pre>
+<p>第一次析构发生在 <code>foo</code> 结束的时候，第二次发生在 <code>main</code> 函数结束的时候。如果在 <code>foo</code> 中修改了这个变量的话，并不会影响到在 <code>main</code> 中的值。因为这里是的变量是被 <strong>拷贝</strong> 了一份，用于 <code>foo</code> 的。</p>
+<p>在 Rust 中，使用了一套特别的基于 <strong>Ownership</strong> 的条件，除非一个类型被声明了具有<code>Copy</code>的特性。</p>
+<h2 id="copy-trait">Copy Trait</h2>
+<p>声明一个类型具有 <code>Copy</code> 标记，会在赋值或者作为函数调用参数的时候，使用 <strong>Copy</strong> ，而非 <strong>Move</strong> 的方式。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">#[derive(Copy, Clone)]
+struct Info {
+	value: i64,
+}
+</code></pre>
+<h2 id="ownership">Ownership</h2>
+<p>Ownership rules 保证在任何的时间，对于一个非拷贝标记的对象，有且只有一个 <code>owner</code> 可以修改。</p>
+<p>因此，当一个函数退出要清理变量的时候，可以保证在今后不会被访问，修改或者删除。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">use std::io;
+use std::fmt;
+
+struct Fuck {
+    shit: String,
+}
+
+impl Fuck {
+    fn new (shit: &amp;str) -&gt; Fuck {
+        println!(&quot;New... {}&quot;, shit);
+        Fuck { shit: shit.to_string() }
+    }
+}
+
+impl Drop for Fuck {
+    fn drop(&amp;mut self) {
+        println!(&quot;Drop... {}&quot;, self.shit);
+    }
+}
+
+impl fmt::Debug for Fuck {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;fuck shit:{:?}&quot;, self.shit)
+    }
+}
+
+fn foo(fuck: Fuck) {
+    println!(&quot;Call foo... {:?}&quot;, fuck);
+}
+</code></pre>
+<p>对于一个简单的 <code>main</code> 函数：</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+	let mut a = Fuck::new(&quot;A&quot;);
+}
+</code></pre>
+<p>结果是：</p>
+<pre><code>New... A
+End Main...
+Drop... A
+</code></pre>
+<p>对于这个复杂一点的版本：</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+    let mut a = Fuck::new(&quot;A&quot;);
+    foo(a);
+}
+</code></pre>
+<p>结果是：</p>
+<pre><code>New... A
+Call foo... fuck shit:&quot;A&quot;
+Drop... A
+End Main...
+</code></pre>
+<p>会发现在函数 <code>foo</code> 结束的时候，对象就被回收了。这是因为这个对象的 <code>owner</code> 在函数调用这个过程中从 <code>main</code> 函数里的 <code>a</code> 变成了 <code>foo</code> 函数里的 <code>fuck</code>。</p>
+<p>当尝试在调用一次 <code>foo</code> 之后再调用一次 <code>foo</code> 的话，就会报错。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+    let mut a = Fuck::new(&quot;A&quot;);
+    foo(a);
+    foo(a);
+    println!(&quot;End Main...&quot;);
+}
+</code></pre>
+<pre><code>src&#x2F;main.rs:34:9: 34:10 error: use of moved value: `a` [E0382]
+src&#x2F;main.rs:34     foo(a);
+                       ^
+src&#x2F;main.rs:33:9: 33:10 note: value moved here
+src&#x2F;main.rs:33     foo(a);
+                       ^
+</code></pre>
+<p>通过这样的编译时期的检查，保证了同一时间只有一个变量拥有这个对象。</p>
+<h2 id="simple-rules">Simple Rules</h2>
+<p>为了实现 <em>没有垃圾回收机制的内存安全</em>， 编译器不用去追踪每一个变量在代码中的使用，而是只要很简单的关注一个 <strong>作用域</strong> 就可以了。</p>
+<p>其实可以总结成一个简单的规则：</p>
+<ul>
+<li>不被使用的返回值会被销毁。</li>
+<li>所有和变量绑定的对象在离开作用域的时候会被销毁，除非这个变量不再持有这个对象。</li>
+</ul>
+<h2 id="reference-and-borrowing">Reference and Borrowing</h2>
+<p>上面说了，当一个变量作为函数调用的参数或者赋值操作的右值的时候，这个变量会失去这个对象的所有权。就像这样：</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn main() {
+    let mut a = Fuck::new(&quot;A&quot;);
+    foo(a);
+    println!(&quot;HAHA... {}&quot;, a.shit);
+    println!(&quot;End Main...&quot;);
+}
+</code></pre>
+<pre><code>src&#x2F;main.rs:34:28: 34:34 error: use of moved value: `a.shit` [E0382]
+src&#x2F;main.rs:34     println!(&quot;HAHA... {}&quot;, a.shit);
+                                          ^~~~~~
+src&#x2F;main.rs:33:9: 33:10 note: value moved here
+src&#x2F;main.rs:33     foo(a);
+                       ^
+</code></pre>
+<p>如果希望拿回变量的所有权，我们可以把对象作为返回值传回来。就像这样：</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn foo(fuck: Fuck) -&gt; Fuck {
+    println!(&quot;Call foo... {:?}&quot;, fuck);
+    fuck
+}
+
+fn main() {
+    let mut a = Fuck::new(&quot;A&quot;);
+    a = foo(a);
+    println!(&quot;HAHA... {}&quot;, a.shit);
+    println!(&quot;End Main...&quot;);
+}
+</code></pre>
+<p>但是不能每次都这么做啊，所以就有了 <code>borrow</code> 和 <code>reference</code>。</p>
+<p>一个<code>borrow</code>的变量绑定最大的区别就是，它只是暂时的获得对象的所有权，会在离开作用域或者更换绑定的时候归还。</p>
+<p>规则：</p>
+<ul>
+<li>一个引用的生命周期不能比它的拥有者还要长。</li>
+<li>你可以有多个引用，但是必须满足：1. 可以有多个引用（<code>&amp;T</code>，不可变）；2. 只能有一个可变的引用（<code>&amp;mut T</code>）。</li>
+</ul>
+<h2 id="lifetime">Lifetime</h2>
+<p>每一个变量都有它自己的生命周期，而生命周期的不同是 <code>danging pointer</code> 发生的主要原因。当你仍然持有一个对象的引用，而这个对象的拥有者的生命周期结束了，那么这个引用就无效了。</p>
+<p>所以，Rust 中不会允许这样的事情发生。Rust 通过整个所有权系统的 <em>生命周期</em>（lifetime） 这一概念来实现这个需求。它明确的指出了每一个引用有效的作用域。</p>
+<p>当我们定义了一个形参为引用的函数，就涉及到了引用的生命周期。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">fn foo(x: &amp;i32) {
+}
+fn foo2&lt;&#x27;a&gt;(x: &amp;&#x27;a i32) {
+}
+</code></pre>
+<p>上面的例子中第一个写法省略了引用 <code>x</code> 的生命周期的声明，第二个例子是声明生命周期的显式写法。</p>
+<p>这里的写法有点类似于 C++ 中的模板函数，需要先在函数名后面的 <code>&lt;&gt;</code> 中提到所用的生命周期，才能在后面的形参列表或者返回值中用到它。</p>
+<p>生命周期并不会改变变量的类型，所以 <code>&amp;i32</code> 和 <code>&amp;'a i32</code> 拥有同样的类型。</p>
+<p>同理，不光函数会涉及到生命周期，含有引用的结构体也会有生命周期的问题，显式声明的写法和函数类似。</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">struct Foo&lt;&#x27;a&gt; {
+	x:&amp;&#x27;a i32,
+}
+</code></pre>
+<p>被省略了声明周期的函数会遵循着以下条件推导变量的生命周期：</p>
+<ul>
+<li>每一个被省略的函数参数成为一个不同的生命周期参数；</li>
+<li>如果刚好有一个生命周期，不管是否省略，这个生命周期都将成为被省略的返回值的生命周期；</li>
+<li>如果有多个生命周期，并且没有 <code>&amp;self</code> 或者 <code>&amp;mut self</code> 的时候，省略返回值的生命周期是不允许的，如果有 <code>&amp;self</code> 或者 <code>&amp;mut self</code> 的话，被省略的返回值的生命周期将是 <code>self</code> 的生命周期。</li>
+</ul>
+<h2 id="zong-jie">总结</h2>
+<p><strong>Ownership</strong>，<strong>Borrow</strong> 和 <strong>Lifetime</strong> 三个部分共同构成了 Rust 的 <strong>Ownership System</strong>。成为了它保证零运行成本的内存安全的关键。这也成为了 Rust 陡峭学习曲线的一个很重要的部分。慢慢熟悉起来之后，会越来越顺手的。</p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/rust-ownership-system/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "rust-ownership-system"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#rust-ownership-system">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> Rust Ownership System</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#copy-trait">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> Copy Trait</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#ownership">
+    <span class="toc-number">&nbsp;1.2.</span>
+    <span class="toc-text"> Ownership</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#simple-rules">
+    <span class="toc-number">&nbsp;1.3.</span>
+    <span class="toc-text"> Simple Rules</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#reference-and-borrowing">
+    <span class="toc-number">&nbsp;1.4.</span>
+    <span class="toc-text"> Reference and Borrowing</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#lifetime">
+    <span class="toc-number">&nbsp;1.5.</span>
+    <span class="toc-text"> Lifetime</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;rust-ownership-system&#x2F;#zong-jie">
+    <span class="toc-number">&nbsp;1.6.</span>
+    <span class="toc-text"> 总结</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

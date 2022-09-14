@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2016-04-05" id="date">Apr 05, 2016</time></span>
+      
+      
+    </div>
+    <h1>C++ zip实现</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <p>最近心血来潮想在C++里实现一些像在python里一样好用的小组件，主要是希望充分发挥<code>C++11</code>里<code>for</code>循环的威力。在完成了<code>enumerate</code>之后，在<code>zip</code>的完成上用了比较久的时间。</p>
+<p>在这里记录下来自己对<code>zip</code>的简单实现。</p>
+<p>主要就用了模板递归，结合了一些<code>C++11</code>的新特性完成的。</p>
+<span id="continue-reading"></span><pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">#pragma once
+
+namespace twistoy {
+	template&lt;typename first, typename... last&gt;
+	class zip_iterator {
+	public:
+		using value_type = std::tuple&lt;typename first::reference, typename last::reference...&gt;;
+		using rebind = zip_iterator&lt;first, last...&gt;;
+		using sub_iterator = zip_iterator&lt;last...&gt;;
+	private:
+		first it_;
+		sub_iterator sub_it_;
+	public:
+
+		zip_iterator(first it, sub_iterator sub_it) : it_(it), sub_it_(sub_it) {}
+
+		rebind&amp; operator++() {
+			++it_;
+			++sub_it_;
+			return *this;
+		}
+
+		value_type operator *() {
+			return std::tuple_cat(std::tuple&lt;typename first::reference&gt;(*it_), *sub_it_);
+		}
+
+		bool operator != (const rebind&amp; others) const {
+			return (it_ != others.it_) &amp;&amp; (sub_it_ != others.sub_it_);
+		}
+
+	};
+
+	template&lt;typename first&gt;
+	class zip_iterator&lt;first&gt; {
+	public:
+		using value_type = std::tuple&lt;typename first::reference&gt;;
+		using rebind = zip_iterator&lt;first&gt;;
+	private:
+		first it_;
+	public:
+		zip_iterator(first it) : it_(it) {}
+		value_type operator *() {
+			return value_type(*it_);
+		}
+		rebind&amp; operator++() {
+			++it_;
+			return *this;
+		}
+		bool operator != (const rebind&amp; others) const {
+			return it_ != others.it_;
+		}
+	};
+
+	template&lt;typename first, typename... last&gt;
+	class zip_impl : zip_impl&lt;last...&gt; {
+	public:
+		using iterator = zip_iterator&lt;typename first::iterator, typename last::iterator...&gt;;
+	private:
+		first&amp; value_;
+	public:
+		zip_impl(first&amp; value, last&amp;... args) : value_(value), zip_impl&lt;last...&gt;(args...) {}
+		iterator begin() {
+			return iterator(value_.begin(), zip_impl&lt;last...&gt;::begin());
+		}
+		iterator end() {
+			return iterator(value_.end(), zip_impl&lt;last...&gt;::end());
+		}
+	};
+
+	template&lt;typename first&gt;
+	class zip_impl&lt;first&gt; {
+	public:
+		using iterator = zip_iterator&lt;typename first::iterator&gt;;
+	private:
+		first&amp; value_;
+	public:
+		zip_impl(first&amp; value) : value_(value) {}
+		iterator begin() {
+			return iterator(value_.begin());
+		}
+		iterator end() {
+			return iterator(value_.end());
+		}
+	};
+
+	template&lt;typename... args_t&gt;
+	zip_impl&lt;typename std::decay&lt;args_t&gt;::type...&gt; zip(args_t&amp;... args) {
+		zip_impl&lt;typename std::decay&lt;args_t&gt;::type...&gt; tmp(args...);
+		return tmp;
+	}
+}
+</code></pre>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/zip-implementtation-for-cpp/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "zip-implementtation-for-cpp"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

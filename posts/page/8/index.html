@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-duoxiao-contest5-1003&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="acm">acm</a></span>
+          
+            <span><a href="string">string</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-08-31">Aug 31, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-duoxiao-contest5-1003&#x2F;">
+      2015多校Contest 5. 1003. Hotaru&#x27;s problem
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h3 id="ti-mu-da-yi">题目大意</h3>
+<p>一个N-sequence由三个部分组成，并符合：</p>
+<ol>
+<li>第一部分和第三部分相同。</li>
+<li>第一部分和第二部分回文。</li>
+</ol>
+<p>求最长的N-sequence的长度。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-duoxiao-contest5-1003&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;override-operator-new&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="operator new">operator new</a></span>
+          
+            <span><a href="override">override</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-08-31">Aug 31, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;override-operator-new&#x2F;">
+      Operator new 的重载
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>new作为关键字是不能被重载的。当new作为关键字的时候的行为是：</p>
+<ol>
+<li>调用operator new分配内存。</li>
+<li>调用构造函数生成对象。</li>
+<li>返回相应的指针。</li>
+</ol>
+<p>new的行为是不能被改变的，但是这里的operator new的行为是可以改变的。也就是对operator new的重载。</p>
+<h3 id="new-yun-suan-fu-biao-da-shi-de-zhong-zai">new 运算符表达式的重载</h3>
+<p><strong>operator new</strong>操作符可以被每个类作为成员函数重载，也可以作为全局函数重载。这里应该是推荐作为成员函数重载的。</p>
+<h5 id="void-operator-new-size-t-size-throw-std-bad-alloc"><em><em>void</em> operator new(size_t size) throw(std::bad_alloc);</em>*</h5>
+<p>参数是一个<code>size_t</code>类型，指明了要分配的内存的大小。</p>
+<pre><code>    void* operator new(std::size_t) throw(std::bad_alloc);
+    void* operator delete(std::size_t) throw();
+</code></pre>
+<p>如果在构造函数执行的时候发生异常，在栈展开的过程中，要回收在第一步中<strong>operator new</strong>分配的内存的时候，会调用想对应的<strong>operator delete</strong>函数。</p>
+<h5 id="void-operator-new-size-t-size-throw-std-bad-alloc-1"><em><em>void</em> operator new[](size_t size) throw(std::bad_alloc);</em>*</h5>
+<p>用于分配数组对象内存的new操作符。如果数组的基类型没有这个成员函数的话，会调用全局的版本分配内存。</p>
+<pre><code>    void * operator new[] (std::size_t) throw(std::bad_alloc);
+    void operator delete[](void*) throw();
+</code></pre>
+<h5 id="void-operator-new-size-t-void"><em><em>void</em> operator new(size_t,void</em>)**</h5>
+<p>带位置的new操作符（placement new）重载版本。C++标准库中已经提供了这个版本的简单实现，只是简单的返回参数指定的地址。</p>
+<pre><code>    &#x2F;&#x2F; Default placement versions of operator new.
+    inline void* operator new(std::size_t, void* __p) throw() { return __p; }
+    inline void* operator new[](std::size_t, void* __p) throw() { return __p; }
+    
+    &#x2F;&#x2F; Default placement versions of operator delete.
+    inline void  operator delete  (void*, void*) throw() { }
+    inline void  operator delete[](void*, void*) throw() { }
+</code></pre>
+<h5 id="zi-xing-ding-zhi-can-shu-de-operator-newhan-shu">自行定制参数的operator new函数</h5>
+<pre><code>    operator new(size_,Type1, Type2, ... );
+</code></pre>
+<p>这时候就可以自定义参数以及其行为。</p>
+<pre><code>    struct point {
+        int x, y;
+        point() = default;
+        point(int x, int y) : x(x), y(y) {}
+        void* operator new(size_t, int&amp;cur);
+    } _pool[maxn];
+    int cur;
+    
+    void* point::operator new(size_t sz, int &amp;cur) {
+        return _pool+(cur++);
+    }
+</code></pre>
+<hr />
+<p>reference:</p>
+<ol>
+<li><a href="https://zh.wikipedia.org/zh/New_(C%2B%2B)">https://zh.wikipedia.org/zh/New_(C%2B%2B</a></li>
+</ol>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;override-operator-new&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;president-tree-learning&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="acm">acm</a></span>
+          
+            <span><a href="data structure">data structure</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-08-31">Aug 31, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;president-tree-learning&#x2F;">
+      主席树
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>主席树我的理解是可持久化线段树的一种应用吧。本质上就是可持久化线段树，不过我们在查询的时候用到了他们之间可以相减的性质。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;president-tree-learning&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;uvalive-5848&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="acm">acm</a></span>
+          
+            <span><a href="uvalive">uvalive</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-08-31">Aug 31, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;uvalive-5848&#x2F;">
+      UVALive 5848. Soju
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="ti-mu-da-yi">题目大意</h1>
+<p>给定两个平面上的点集，求两个点集中距离最近的两个点的距离。（这里的距离说的是曼哈顿距离。）题目中保证了左边点集的点都一定在右侧的点集的左侧。也就是任意一个在左侧集合的点的横坐标都小于任意一个在右侧集合的点。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;uvalive-5848&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;python-decorator&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="Python">Python</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2015-08-21">Aug 21, 2015</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;python-decorator&#x2F;">
+      Python 装饰器
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>给函数添加一个包装层以添加额外的处理部分，我们就可以使用装饰器这种方法。</p>
+<h6 id="ding-yi-yi-ge-zhuang-shi-qi">定义一个装饰器：</h6>
+<pre><code>    import time
+    
+    def timethis(func):
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            result = func(*args, **kwargs)
+            end = time.time()
+            print(func.__name__, end - start)
+            return result
+        return wrapper
+</code></pre>
+<h6 id="shi-yong-zhe-ge-zhuang-shi-qi">使用这个装饰器</h6>
+<pre><code>    @timethis
+    def countdown(n):
+        while n &gt; 0:
+            n -= 1
+</code></pre>
+<p>当如此编写代码的时候和单独这么写的效果是一样的：</p>
+<pre><code>    def countdown(n):
+        while n &gt; 0:
+            n -= 1
+    countdown = timethis(countdown)
+</code></pre>
+<h6 id="bao-cun-han-shu-qian-ming-deng-xin-xi">保存函数签名等信息</h6>
+<p>但是我们像上面那么做的时候，其实是丢失了函数签名，doc等信息的，这时候可以通过对装饰器的装饰来解决这个问题。改动一下上面的代码：</p>
+<pre><code>    import time
+    from functools import wraps
+    
+    def timethis(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            result = func(*args, **kwargs)
+            end = time.time()
+            print(func.__name__, end - start)
+            return result
+        return wrapper
+</code></pre>
+<h6 id="dui-zhuang-shi-qi-jin-xing-jie-bao-zhuang">对装饰器进行解包装</h6>
+<p>可以通过访问<code>__wrapped__</code>属性来实现对原始函数的访问。</p>
+<h6 id="yi-ge-ke-yi-jie-shou-can-shu-de-zhuang-shi-qi">一个可以接受参数的装饰器</h6>
+<p>其实是很简单的，在外层的函数部分接受定义装饰器时的参数就可以了。</p>
+<pre><code>    from functools import wraps, partial
+    import logging
+    
+    def logged(level, name=None, message=None):
+        def decorator(func):
+            logname = name if name else func.__module__
+            log = logging.getLogger(logname)
+            logmsg = message if message else func.__name__
+    
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                log.log(level, logmsg)
+                return func(*args, **kwargs)
+    
+            return wrapper
+    
+        return decorator
+    
+    
+    @logged(logging.DEBUG)
+    def add(x, y):
+        return x + y
+    
+    logging.basicConfig(level=logging.DEBUG)
+    print(add(2, 3))
+</code></pre>
+<h6 id="zhuang-shi-qi-can-shu-xu-yao-ke-yi-xiu-gai">装饰器参数需要可以修改</h6>
+<p>还是刚才的那段代码，这次用到了另一个装饰器并且使用了<code>nonlocal</code>关键字来声明装饰器内部的属性。</p>
+<pre><code>    from functools import wraps, partial
+    import logging
+    
+    def attach_wrapper(obj, func=None):
+        if func is None:
+            return partial(attach_wrapper, obj)
+        setattr(obj, func.__name__, func)
+        return func
+    
+    def logged(level, name=None, message=None):
+        def decorator(func):
+            logname = name if name else func.__module__
+            log = logging.getLogger(logname)
+            logmsg = message if message else func.__name__
+    
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                log.log(level, logmsg)
+                return func(*args, **kwargs)
+    
+            @attach_wrapper(wrapper)
+            def set_level(newlevel):
+                nonlocal level
+                level = newlevel
+    
+            @attach_wrapper(wrapper)
+            def set_message(newmsg):
+                nonlocal logmsg
+                logmsg = newmsg
+    
+            return wrapper
+    
+        return decorator
+    
+    
+    @logged(logging.DEBUG)
+    def add(x, y):
+        return x + y
+    
+    logging.basicConfig(level=logging.DEBUG)
+    print(add(2, 3))
+</code></pre>
+<h6 id="ke-xuan-can-shu-de-zhuang-shi-qi">可选参数的装饰器</h6>
+<p>还是上面的那段代码，如果<code>level</code>属性也是可选的，像上面那么写我们就必须用这样的方式去使用它：</p>
+<pre><code>    @logged()
+    def fuck():
+        pass
+</code></pre>
+<p>但是显然这不是我所希望的，因为我们总会忘记那个空的括号。所以我们就可以改动一下：</p>
+<pre><code>    def logged(func=None, *, level=logging.DEBUG, name=None, message=None):
+        if func is None:
+            return partial(logged, level=level, name=name, message=message)
+        logname = name if name else func.__module__
+        log = logging.getLogger(logname)
+        logmsg = message if message else func.__name__
+    
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            log.log(level, logmsg)
+            return func(*args, **kwargs)
+        return wrapper
+</code></pre>
+<p>副作用是<code>*</code>之后的参数必须显式的给出形参的名字。</p>
+<h6 id="yong-lei-lai-shi-xian-zhuang-shi-qi">用类来实现装饰器</h6>
+<p>前面给出的都是用函数闭包来实现装饰器的例子，当然我们也可以用一个类来实现装饰器。</p>
+<pre><code>    from functools import wraps
+    
+    class A:
+        def decorator1(self, func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                print(&quot;Decorate 1&quot;)
+                return func(*args, **kwargs)
+            return wrapper
+    
+        @classmethod
+        def decorator2(cls, func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                print (&#x27;Decorator 2&#x27;)
+                return func(*args, **kwargs)
+            return wrapper
+</code></pre>
+<h6 id="ba-zhuang-shi-qi-ding-yi-cheng-lei">把装饰器定义成类</h6>
+<p>这个时候要实现类的<code>__call__</code>和<code>__get__</code>方法。</p>
+<pre><code>    class Profield:
+        def __init__(self, func):
+            wraps(func)(self)
+            self.ncalls = 0
+    
+        def __call__(self, *args, **kwargs):
+            self.ncalls += 1
+            return self.__wrapped__(*args, **kwargs)
+    
+        def __get__(self, instance, cls):
+            if instance is None:
+                return self
+            else:
+                return types.MethodType(self, instance)
+</code></pre>
+<p>这里的<code>__get__</code>方法的实现一定不能忽略。</p>
+<hr />
+<p>相关资料：</p>
+<ul>
+<li><a href="https://docs.python.org/3.4/library/functools.html">functools — Higher-order functions and operations on callable objects</a></li>
+</ul>
+<h6 id="li-yong-zhuang-shi-qi-gei-bei-bao-zhuang-de-han-shu-tian-jia-can-shu">利用装饰器给被包装的函数添加参数</h6>
+<pre><code>    import inspect
+    
+    def optional_debug(func):
+        if &#x27;debug&#x27; in inspect.getargspec(func).args:
+            raise TypeError(&#x27;debug argument already defined.&#x27;)
+        @wraps(func)
+        def wrapper(*args, debug=False, **kwargs):
+            if debug:
+                print(&quot;fuck debug&quot;, func.__name__)
+            return func(*args, **kwargs)
+        return wrapper
+</code></pre>
+<p>这里的实现还检查了被包装的函数是不是已经有要包装进去的参数了来保证不会有参数名字冲突的问题。 但是这种实现不能解决函数签名的问题，在函数签名中是没有我们加入的debug这个参数的。所以我们再次修改我们的实现。</p>
+<pre><code>    def optional_debug(func):
+        if &#x27;debug&#x27; in inspect.getargspec(func).args:
+            raise TypeError(&#x27;debug argument already defined.&#x27;)
+        @wraps(func)
+        def wrapper(*args, debug=False, **kwargs):
+            if debug:
+                print(&quot;fuck debug&quot;, func.__name__)
+            return func(*args, **kwargs)
+    
+        sig = inspect.signature(func)
+        parms = list(sig, parameters.values())
+        parms.append(inspect.Parameter(&#x27;debug&#x27;, inspect.Parameter.KEYWORD_ONLY, default=False))
+        wrapper.__signature__ = sig.replace(parameters=parms)
+    
+        return wrapper
+</code></pre>
+<h6 id="li-yong-zhuang-shi-qi-gai-bian-lei-fang-fa-de-xing-wei">利用装饰器改变类方法的行为</h6>
+<pre><code>    def log_getattribute(cls):
+        orig_getattribute = cls.__getattribute__
+    
+        def new_attribute(self, name):
+            print(&#x27;getting:&#x27;, name)
+            return orig_getattribute(self, name)
+    
+        cls.__getattribute__ = new_attribute
+    
+    @log_getattribute
+    class A:
+        def __init__(self, x):
+            self.x = x
+        def spam(self):
+            pass
+</code></pre>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;python-decorator&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+
+<div id="post-footer">
+  <hr />
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;7&#x2F;">Previous</a>
+  
+  <span style="color: #fe2"> | 8 / 8 | </span>
+  
+  <span>Next</span>
+  
+  <hr />
+</div>
+
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

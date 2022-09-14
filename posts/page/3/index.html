@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compare-between-crtp-and-virtual&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="crtp">crtp</a></span>
+          
+            <span><a href="virtual">virtual</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2018-10-16">Oct 16, 2018</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compare-between-crtp-and-virtual&#x2F;">
+      Compare Between CRTP and Virtual
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>我们平时都会使用虚函数来实现 C++ 里的运行时的多态，但是虚函数会带来很多性能上面的问题：</p>
+<ol>
+<li>虚函数的调用需要额外的寻址</li>
+<li>虚函数不能被 inline，当使用比较小的虚函数的时候会带来很严重的性能负担</li>
+<li>需要在每个对象中维护一个额外的虚函数表</li>
+</ol>
+<p>但是在有些情况下，我们就可以用一些静态的类型分发策略来带来一些性能上面的好处。</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compare-between-crtp-and-virtual&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;interface-in-cpp&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++11">c++11</a></span>
+          
+            <span><a href="compile-time">compile-time</a></span>
+          
+            <span><a href="reflection">reflection</a></span>
+          
+            <span><a href="interface">interface</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+        
+      </span>
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2018-08-06">Aug 06, 2018</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;interface-in-cpp&#x2F;">
+      Interface in C++
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="interface-in-c">Interface In C++</h1>
+<h2 id="wen-ti-ti-chu">问题提出</h2>
+<p>我记得我不止一次提到说，我更喜欢 golang 的泛型设计。一个优秀的泛型系统，我希望是来表示一个方法可以接受什么。应该是一个类似于 concept 的概念。我们都知道，在 C++ 里面，我们更多的使用虚函数来实现这个功能，就像下面这样：</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;interface-in-cpp&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compile-time-reflection&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++11">c++11</a></span>
+          
+            <span><a href="compile-time">compile-time</a></span>
+          
+            <span><a href="reflection">reflection</a></span>
+          
+            <span><a href="macro">macro</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2018-04-15">Apr 15, 2018</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compile-time-reflection&#x2F;">
+      Compile Time Reflection in C++11
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="gu-shi-bei-jing">故事背景</h1>
+<p>故事发生在遥远的我在使用C++来处理JSON和对象绑定的时候，我厌倦了写这样的代码:</p>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;compile-time-reflection&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-memory-model&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++11">c++11</a></span>
+          
+            <span><a href="memory-model">memory-model</a></span>
+          
+            <span><a href="concurrency">concurrency</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2018-03-19">Mar 19, 2018</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-memory-model&#x2F;">
+      C++11内存模型
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <h1 id="introduction">Introduction</h1>
+<p>// cpp concurrency in action 里的例子</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">void undefined_behaviour_with_double_checked_locking() {
+  if (!resource_ptr) { &#x2F;&#x2F; 1
+    std::lock_guard&lt;std::mutex&gt; lk(resource_mutex);
+    if (!resource_ptr) { &#x2F;&#x2F; 2
+      resource_ptr.reset(new some_resource); &#x2F;&#x2F; 3
+    }
+  }
+  resource_ptr-&gt;do_something(); &#x2F;&#x2F; 4
+}
+</code></pre>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-memory-model&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+<a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;changes-in-cpp-17&#x2F;" class="recent-posts">
+  <div class="recent-info">
+    
+      <span class="categories">
+        
+          
+            <span><a href="Tech">Tech</a></span>
+          
+        
+      </span>
+    
+      <span class="tags">
+        
+          
+            <span><a href="c++">c++</a></span>
+          
+            <span><a href="c++17">c++17</a></span>
+          
+            <span><a href="constexpr">constexpr</a></span>
+          
+            <span><a href="template">template</a></span>
+          
+        
+      </span>
+    
+    <time datetime="2018-02-25">Feb 25, 2018</time>
+  </div>
+  <h1 class="recent-title">
+    <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;changes-in-cpp-17&#x2F;">
+      在C++17中的部分新特性
+    </a>
+  </h1>
+  <div class="recent-excerpt">
+    
+    
+      <p>C++17已经发布了有一些时候，并且很多的编译器已经完成了对C++17的支持，那对于C++17中的新特性，我也好奇的玩了一些，其中的几个新特性特别吸引我的注意。</p>
+<h1 id="if-init">if-init</h1>
+<h2 id="grammar">Grammar</h2>
+<p><strong>if</strong> <strong>(</strong> <em>init-statement</em> <em>condition</em> <strong>)</strong>
+<em>init-statement</em> 可以是：</p>
+<ul>
+<li>表达式语句（可以是空语句，仅<code>;</code>）</li>
+<li>声明语句</li>
+</ul>
+
+    
+  </div>
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;changes-in-cpp-17&#x2F;">
+    <span class="read-more">READ MORE +</span>
+  </a>
+</a>
+
+
+
+
+<div id="post-footer">
+  <hr />
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;2&#x2F;">Previous</a>
+  
+  <span style="color: #fe2"> | 3 / 8 | </span>
+  
+  <a href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;page&#x2F;4&#x2F;">Next</a>
+  
+  <hr />
+</div>
+
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2019-03-27" id="date">Mar 27, 2019</time></span>
+      
+      
+    </div>
+    <h1>VIM and Latex</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="qi-yuan">起源</h1>
+<p>起源是在群里看到了有人分享的关于一个人用 <code>vim</code> 写 <code>latex</code> 的文章，但是它的做法是用了一个 <code>vimtex</code> 的独立插件。
+我是个 language server 的狂热使用者，所以我就在找一个用 language server 的处理方案。回忆起来另一次在另一个群里看到的，一个叫做 <a href="https://github.com/latex-lsp/texlab">texlab</a> 的项目，就在 vim 里搞个配合。</p>
+<span id="continue-reading"></span><h1 id="vim-li-de-cha-jian-xuan-ze">vim 里的插件选择</h1>
+<p>vim 里的 language client 的实现用好几种：</p>
+<ul>
+<li><a href="https://github.com/prabirshrestha/vim-lsp">vim-lsp</a></li>
+<li><a href="https://github.com/neoclide/coc.nvim">coc.nvim</a></li>
+<li><a href="https://github.com/autozimu/LanguageClient-neovim">LanguageClient-neovim</a></li>
+</ul>
+<p>用来用去还是 <code>coc.nvim</code> 在这里面不论是流畅度还是 feature 的丰富程度都是比较好的。所以我也一直在用。</p>
+<h1 id="install">Install</h1>
+<p>install <code>coc.nvim</code>:</p>
+<pre data-lang="vim" class="language-vim "><code class="language-vim" data-lang="vim">call dein#add(&#x27;neoclide&#x2F;coc.nvim&#x27;, {&#x27;build&#x27;: &#x27;yarn install&#x27;})
+</code></pre>
+<p>install <code>texlab</code>:</p>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">git clone https:&#x2F;&#x2F;github.com&#x2F;latex-lsp&#x2F;texlab
+yarn install &amp;&amp; yarn build
+</code></pre>
+<h1 id="config">config</h1>
+<p>config in coc.nvim</p>
+<pre data-lang="json" class="language-json "><code class="language-json" data-lang="json">&quot;texlab&quot;: {
+  &quot;command&quot;: &quot;node&quot;,
+  &quot;args&quot;: [
+    &quot;&#x2F;path&#x2F;to&#x2F;texlab&#x2F;dist&#x2F;texlab.js&quot;, &quot;--stdio&quot;
+  ],
+  &quot;filetypes&quot;: [&quot;tex&quot;, &quot;plaintex&quot;],
+  &quot;trace.server&quot;: &quot;verbose&quot;
+}
+</code></pre>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/vim-and-latex/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "vim-and-latex"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;vim-and-latex&#x2F;#qi-yuan">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 起源</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;vim-and-latex&#x2F;#vim-li-de-cha-jian-xuan-ze">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> vim 里的插件选择</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;vim-and-latex&#x2F;#install">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> Install</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;vim-and-latex&#x2F;#config">
+    <span class="toc-number">4.</span>
+    <span class="toc-text"> config</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

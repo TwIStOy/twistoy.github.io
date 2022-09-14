@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2015-10-19" id="date">Oct 19, 2015</time></span>
+      
+      
+    </div>
+    <h1>2015 长春站亚洲区 &amp;&amp; 退役总结</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h2 id="zai-lu-shang">在路上</h2>
+<p>我居然到去长春比赛之前才知道，哈尔滨居然离长春这么近。【好吧，不要在意我的地理，我一直以为去长春至少要做个飞机什么的呢，23333。没想到残酷的事实告诉我，长春比牡丹江还近66666666。】
+去的时候的路上在刷微博的时候，居然发现自己和SDL在一辆车上，找她扯淡扯到了快下车，所以在去的时候的车上也没感到什么痛苦，就一下子到了。
+回来的时候我在努力的编故事【hhh，我要给小鲜肉们安利舰娘hhhhh】，偶尔和小伙伴们扯一会，可能是比完赛大家心情都还不错的原因， 气氛也是非常的好，虽然火车时间比去的时候长了一个小时，可是也够开心了啊。</p>
+<span id="continue-reading"></span><h2 id="bin-guan-li">宾馆里</h2>
+<p>老实说，宾馆的条件还是可以的。没什么可吐槽的，唯一算上和宾馆有关的吐槽就应该是不认识路还强行要带路的LCH同学。热身赛回来的时候，他说自己是认得路的，我们也天真的相信了他，结果…</p>
+<h2 id="bi-sai-zhong">比赛中</h2>
+<h4 id="re-shen-sai">热身赛</h4>
+<p>热身赛一共四道题目，A题很逗比的是一个测试人品的题，官方的说法是要测试一下服务器压力。23333。还真的有人品很好的2次就过了，也是厉害。热身赛做了一小会就跑去玩数独和扫雷了。时至今日，我终于学会了扫雷的玩法，【新技能get！】</p>
+<h4 id="zheng-sai">正赛</h4>
+<p>比赛前就听说了这次比赛的题目数量应该是比较多的，和长老预料的不一样的是这次的题目难度并没有因为题量而降低多少。
+比赛开始之后像我们这种队伍就开始紧跟榜单，接连发现了两道水题，F题（1Y/25）和L题（1Y/20）。这两个题呗我们迅速的A掉了。都是1Y。然而当我们看到了J题的时候，本来标解是Trie的，可是我们第一时间想到的是一个$n^3$的暴力枚举的办法，我显然以为是会TLE的。结果在赛场上GF想到了一个略微优化了一点的方法，抱着如果TLE就再仔细想想的念头尝试了一次，结果WA掉了。这次的WA给了我们很大的信心，调掉了一个小bug就A掉了。2Y/76
+于此同时的是LFQ在写G题。可是一开始他读错了题意，写完一份DFS之后发现并不能通过样例，重构之后1Y/134。
+这时候我们已经出了四题了，还算是排在了一个还可以的位置上。在LFQ写G题的时候，我和GF在考虑H题的解法。最开始想了一个按照升序来优化枚举的$n^3$的算法。接连WA了很多发，中间也有够侥幸心理觉得既然J题的都可以水过，那么H题的数据也不会太强吧，然后强行TLE了一次。后来发现了这是一个完全背包的模型，飞快重写了完全背包，一次就通过了，最后6Y/252。
+在GF写升序优化版本的H题的时候，我和LFQ读了E题，并迅速的发现了这应该是个简单的递推一次，然后分情况求解的过程。在GF的H题WA了在纸面上Debug的时候，写好了E题，过了样例就WA了一发。最开始是以为有精度问题的，判断了精度之后又WA了。最后发现自己在一个很蠢很蠢的地方，我们明明想到也写在纸上了的一个条件并没有写进去，加上特判条件，3Y/260。</p>
+<p>最后我们的成绩也就以6题收尾的。拿了人生中的第一个ACM金牌吧，说不开心都是假的，不过成绩都是过去的事情了，让自己变得更强才更重要呢。</p>
+<h2 id="jie-shu-yu">结束语</h2>
+<p>以金牌收尾的ACM生涯，我自己看来是已经圆满了的。回忆自己搞算法竞赛的过程，从高中时候搞算法竞赛逃课被老师告诉家长，周围的人都劝我不要在学下去了，耽误了茫茫多的文化课，结果NOIP还是以一个很差的成绩收尾了；到了大学开始搞ACM，从大一的时候参加省赛和东北赛都是二等奖滚粗，到大二和亮哥、学姐一起拿到了亚洲区银牌，省赛开始和放牛组队拿到了奇怪的省赛冠军和东北赛一等奖，到了今天我也已经大三了，也算是得偿所愿吧，终于拿到了一个金牌。想想时间过的还真是快的可以，一晃就在茫茫多的训练中过去了。想一想自己以后会不会轻松一点呢，应该就会有周末了吧，假期也可以出去和小伙伴溜达溜达体验祖国的大好风光了？
+要说到学ACM我都收获了什么，首先是收获了一群很棒的小伙伴，其次就是在参加比赛的过程中锻炼和证明了自己的能力吧，我觉得。
+好像觉得也没什么可写下去的了，就这样吧。我终于有一天退役了，以前看着别人的退役贴都感觉好厉害，今天自己也躺在床上写下了这个不算退役贴的退役贴吧。就这样吧，再见ACM！</p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/2015-changchun-regional/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "2015-changchun-regional"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#zai-lu-shang">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 在路上</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#bin-guan-li">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> 宾馆里</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#bi-sai-zhong">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> 比赛中</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#re-shen-sai">
+    <span class="toc-number">&nbsp;3.1.</span>
+    <span class="toc-text"> 热身赛</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#zheng-sai">
+    <span class="toc-number">&nbsp;3.2.</span>
+    <span class="toc-text"> 正赛</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;2015-changchun-regional&#x2F;#jie-shu-yu">
+    <span class="toc-number">4.</span>
+    <span class="toc-text"> 结束语</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

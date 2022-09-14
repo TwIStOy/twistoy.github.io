@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2016-11-13" id="date">Nov 13, 2016</time></span>
+      
+      
+    </div>
+    <h1>在 CLion 中配置 gtest</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <p>最近在学习 googletest 这个用于 C++ 的单元测试框架的时候，遇到了一个问题。就是希望可以在 CLion 中配置好一个制定项目的测试，然后由 CLion 运行并且给出一个结果。
+结果当然是成功了的，这篇文章主要就记录一下整个配置的过程，配置过程整体很简单，主要就是写 CMakeLists.txt 的过程（因为 CLion 使用 CMakeLists 管理整个 C++ 的项目）。</p>
+<h1 id="xiang-mu-mu-lu-jie-gou">项目目录结构</h1>
+<pre><code>+ project_home
+  + ext &#x2F;&#x2F; external library
+    + gtest &#x2F;&#x2F; google test framework
+	  - CMakeLists.txt
+  + include &#x2F;&#x2F; project headers
+  + src &#x2F;&#x2F; project source files
+  + test &#x2F;&#x2F; test files
+  - CMakeLists.txt
+</code></pre>
+<span id="continue-reading"></span>
+<p>这里假定我们把 gtest 放在 <code>ext</code> 这个目录下。我们不需要手动的从 github 上下载 gtest，CMake 可以替我们做到这个部分。具体的命令在后面会写到。
+test 目录就是用于存放单元测试文件的地方，这部分的 cpp 文件是不需要写 main 的，在链接的时候，会把 main 函数链接上去。</p>
+<h1 id="ext-gtest-cmakelists-txt">ext/gtest/CMakeLists.txt</h1>
+<p>这部分的 CMakeLists.txt 会作为一个子文件夹在整个项目的 CMakeLists.txt 被使用。所以，这里是一个单独的 project。</p>
+<pre><code>cmake_minimum_required(VERSION 3.6)
+project(gtest_builder)
+include(ExternalProject)
+
+set(GTEST_FORCE_SHARED_CRT ON)
+set(GTEST_DISABLE_PTHREADS OFF)
+
+ExternalProject_Add(googletest
+    GIT_REPOSITORY https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;googletest.git
+    CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
+    -DCMAKE_CXX_FLAGS=${MSVC_COMPILER_DEFS}
+    -Dgtest_force_shared_crt=${GTEST_FORCE_SHARED_CRT}
+    -Dgtest_disable_pthreads=${GTEST_DISABLE_PTHREADS}
+    -DBUILD_GTEST=ON
+    PREFIX &quot;${CMAKE_CURRENT_BINARY_DIR}&quot;
+    # Disable install step
+    INSTALL_COMMAND &quot;&quot;
+    )
+
+# Specify include dir
+ExternalProject_Get_Property(googletest source_dir)
+set(GTEST_INCLUDE_DIRS ${source_dir}&#x2F;googletest&#x2F;include PARENT_SCOPE)
+
+# Specify MainTest&#x27;s link libraries
+ExternalProject_Get_Property(googletest binary_dir)
+set(GTEST_LIBS_DIR ${binary_dir}&#x2F;googlemock&#x2F;gtest PARENT_SCOPE)
+</code></pre>
+<p>这里用到了 CMake 的一个模块 <code>ExternalProject</code>，文档在这里：<a href="https://cmake.org/cmake/help/v3.7/module/ExternalProject.html">传送门</a>。
+最后把下载好的 googletest 的头文件目录和编译好的链接库的目录返回给项目的 CMakeLists.txt。</p>
+<h1 id="cmakelists-txt">CMakeLists.txt</h1>
+<pre><code>cmake_minimum_required(VERSION 3.6)
+set(PROJECT_NAME_STR gtest_usage)
+project(${PROJECT_NAME_STR})
+
+find_package(Threads REQUIRED)
+
+add_definitions(-Wall -std=c++11 -Wno-deprecated -pthread)
+
+set(COMMON_INCLUDES  ${PROJECT_SOURCE_DIR}&#x2F;include)
+set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}&#x2F;ext)
+
+add_subdirectory(${EXT_PROJECTS_DIR}&#x2F;gtest)
+
+enable_testing()
+
+set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
+include_directories(${GTEST_INCLUDE_DIRS} ${COMMON_INCLUDES})
+
+file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}&#x2F;test&#x2F;*.cpp)
+add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
+add_dependencies(${PROJECT_TEST_NAME} googletest)
+
+if(NOT WIN32 OR MINGW)
+  target_link_libraries(${PROJECT_TEST_NAME}
+      ${GTEST_LIBS_DIR}&#x2F;libgtest.a
+      ${GTEST_LIBS_DIR}&#x2F;libgtest_main.a
+      )
+else()
+  target_link_libraries(${PROJECT_TEST_NAME}
+      debug ${GTEST_LIBS_DIR}&#x2F;DebugLibs&#x2F;${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
+      optimized ${GTEST_LIBS_DIR}&#x2F;ReleaseLibs&#x2F;${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
+      )
+  target_link_libraries(${PROJECT_TEST_NAME}
+      debug ${GTEST_LIBS_DIR}&#x2F;DebugLibs&#x2F;${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
+      optimized ${GTEST_LIBS_DIR}&#x2F;ReleaseLibs&#x2F;${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
+      )
+endif()
+
+target_link_libraries(${PROJECT_TEST_NAME} ${CMAKE_THREAD_LIBS_INIT})
+add_test(test1 ${PROJECT_TEST_NAME})
+</code></pre>
+<p>这里的前面和配置一个正常的项目没什么不同的，都是配置头文件位置，配置链接库位置。唯一的区别是最后不是 <code>add_executable</code> 而是 <code>add_test</code>。</p>
+<p>到这里应给整个项目都配置好了，然后就可以在 CLion 的右上角找到。这样的部分：<img src="http://7vijdo.com1.z0.glb.clouddn.com/image/autoupload/gtest-in-clion-1.jpg" alt="" /></p>
+<p>CLion 可以识别出来这个是使用的 gtest 框架。然后就可以成功的运行啦！CLion 会在下面给出单元测试的报告，包括了每个 test case 的运行时间和结果。</p>
+<p>快去试一试吧~</p>
+<hr />
+<p>参考链接：</p>
+<ul>
+<li>https://github.com/snikulov/google-test-examples</li>
+<li>https://github.com/google/googletest</li>
+</ul>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/gtest-in-clion/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "gtest-in-clion"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;#xiang-mu-mu-lu-jie-gou">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 项目目录结构</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;#ext-gtest-cmakelists-txt">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> ext&#x2F;gtest&#x2F;CMakeLists.txt</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;gtest-in-clion&#x2F;#cmakelists-txt">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> CMakeLists.txt</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

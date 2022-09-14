@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2020-06-01" id="date">Jun 01, 2020</time></span>
+      
+      
+    </div>
+    <h1>软件设计哲学(NOTE)</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="red-flags">RED FLAGS</h1>
+<h2 id="shallow-module">Shallow Module</h2>
+<p>A shallow module is one whose interface is complicated relative to the functionality it provides. Shallow modules don’t help much in the
+battle against complexity, because the benefit they provide (not having to learn about how they work internally) is negated by the cost
+of learning and using their interfaces. Small modules tend to be shallow.</p>
+<span id="continue-reading"></span><h2 id="information-leakage">Information Leakage</h2>
+<p>Information leakage occurs when the <strong>same knownledge is used in multiple places</strong>, such as two different classed that both understand the
+format of a particular type of file.</p>
+<h2 id="temporal-decomposition">Temporal Decomposition</h2>
+<p>In temporal decomposition, execution order is reflected in the code structure: operations that happen at different times are in different
+methods or classes. If the same knowledge is used at different points in execution, it get encoded in multiple places, resulting in
+information leakage.</p>
+<h2 id="overexposure">Overexposure</h2>
+<p>If the API for a commonly used feature forces users to learn about other features that are rarely used, this increases the cognitive load on users who don’t need the rarely used features.</p>
+<h2 id="pass-through-method">Pass-Through Method</h2>
+<p>A pass-through method is one that does nothing except pass its arguments to another method, usually with the same API as the pass-through
+method. This typically indicates that there is not a clean division of respoinsibility between the classes.</p>
+<h2 id="repetition">Repetition</h2>
+<p>If the same piece of code (or code that is almost the same) appears over and over again, that’s a red flag that you haven’t found the right abstractions.</p>
+<h2 id="special-general-mixture">Special-General Mixture</h2>
+<p>This red flag occurs when a general-purpose mechanism also contains code specialized for a particular use of that mechanism. This makes the mechanism more complicated and creates information leakage between the 80 mechanism and the particular use case: future modifications to the use case are likely to require changes to the underlying mechanism as well.</p>
+<h2 id="conjoined-methods">Conjoined Methods</h2>
+<p>It should be possible to understand each method independently. If you can’t understand the implementation of one method without also understanding the implementation of another, that’s a red flag.</p>
+<h2 id="comment-repeats-code">Comment Repeats Code</h2>
+<p>Red Flag: Comment Repeats Code If the information in a comment is already obvious from the code next to the comment, then the comment isn’t helpful. One example of this is when the comment uses the same words that make up the name of the thing it is describing.</p>
+<h2 id="implementation-documentation-contaminates-interface">Implementation Documentation Contaminates Interface</h2>
+<p>This red flag occurs when interface documentation, such as that for a method, describes implementation details that aren’t needed in order to use the thing being documented.</p>
+<h2 id="vague-name">Vague Name</h2>
+<p>If a variable or method name is broad enough to refer to many different things, then it doesn’t convey much information to the developer and the underlying entity is more likely to be misused.</p>
+<h2 id="hard-to-pick-name">Hard to Pick Name</h2>
+<p>If it’s hard to find a simple name for a variable or method that creates a clear image of the underlying object, that’s a hint that the underlying object may not have a clean design.</p>
+<h2 id="hard-to-describe">Hard to Describe</h2>
+<p>The comment that describes a method or variable should be simple and yet complete. If you find it difficult to write such a comment, that’s an indicator that there may be a problem with the design of the thing you are describing.</p>
+<h1 id="excerpt">EXCERPT</h1>
+<h3 id="definition">Definition</h3>
+<p><strong>Complexity</strong> is anything related to the structure of a software system that makes it hard to understand and modify the system.
+$$ C = \sum_{p}c_pt_p $$
+The overall complexity of a system $(C)$ is determined by the complexity of each part $p(c_p)$ weighted by the faction of time
+developers spend working on the part $(t_p)$.</p>
+<h3 id="symptoms">Symptoms</h3>
+<ul>
+<li><strong>Change amplification</strong>: The first symptom of complexity is that a seemingly simple change requires code modifications in
+many different places.</li>
+<li><strong>Cognitive load</strong>: The second symptom of complexity is cognitive load, which refers to how much a developer needs to know
+in order to complete a task.</li>
+<li><strong>Unknown unknowns</strong>: The third symptom of complexity is that it is not obvious which pieces of code must be modified to
+complete a task, or what information a developer must have to carry out the task successfully.</li>
+</ul>
+<h2 id="modules">Modules</h2>
+<ul>
+<li>In this world, the complexity of a system would be the complexity of its worst module.</li>
+<li>The interface describes <em>what</em> the module does but not <em>how</em> it does it.</li>
+<li>The best modules are those whose interfaces are much simpler than their implementations.</li>
+<li>An <strong>abstraction</strong> is a simplified view of an entity, which omits unimportant details.</li>
+<li>Interface:
+<ul>
+<li>The interface to a module contains two kinds of information: <strong>formal</strong> and <strong>informal</strong>.
+<ul>
+<li>The formal parts of an interface are specified explicitly in the code, and some of these can be checked for correctness
+by the programming language.</li>
+<li>The informal parts of an interface includes its high-level behavior, such as the fact that a function deletes the file named by
+one of its arguments.</li>
+</ul>
+</li>
+<li>In modular programming, each module provides an abstraction in form of its interface. The interface presents a simplified view of the module’s functionality; the details of the implementation are unimportant from the standpoint of the module’s abstraction, so they are omitted from the interface. <strong>A detail can only be omiited from an abstraction if it is unimportant.</strong></li>
+</ul>
+</li>
+<li>The best modules are those that provide powerful functionality yet have simple interfaces: they have a lot of functionality hidden behind
+a simple interface. A deep module is a good abstraction because only a small fraction of its internal complexity is visible to its users.</li>
+<li>Classitis may result in classes that are individually simple, but it increases the complexity of the overall system. Small classes don’t contribute much functionality, so there have to be a lot of them, each with its own interface. These interfaces accumulate to create tremendous complexity at the system level.</li>
+<li>Provide choice is good, but <strong>interfaces should be designed to make the common case as simple as possible</strong>. If an interface has many
+features, but most developers only need to be aware of a few of them, the effective complexity of that interface is just the complexity
+of the commonly used features.</li>
+<li>The most important (and perhaps surprising) benefit of the general- purpose approach is that it results in simpler and deeper interfaces than a special-purpose approach. The general-purpose approach can also save you time in the future, if you reuse the class for other purposes. However, even if the module is only used for its original purpose, the general-purpose approach is still better because of its simplicity.</li>
+<li>Questions to ask yourself
+<ul>
+<li>What is the simplest interface that will cover all my current needs?</li>
+<li>In how many situations will this method be used?</li>
+<li>Is this API easy to use for my current needs?</li>
+</ul>
+</li>
+<li>Decorators
+<ul>
+<li>A decorator object takes an existing object and extends its functionality; it provides an API similar or identical to the underlying object, and its methods invoke the methods of the underlying object.</li>
+<li>Before creating a decorator class, consider alternatives such as the following:
+<ul>
+<li>Could you add the new functionality directly to the underlying class, rather than creating a decorator class?</li>
+<li>If the new functionality is specialized for a particular use case, would it make sense to merge it with the use case, rather than creating a separate class?</li>
+<li>Could you merge the new functionality with an existing decorator, rather than creating a new decorator?</li>
+<li>Finally, ask yourself whether the new functionality really needs to wrap the existing functionality: could you implement it as a stand-alone class that is independent of the base class?</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="together-vs-apart">Together vs Apart</h3>
+<ul>
+<li>Bring together if information is shared</li>
+<li>Bring together if it will simplify the interface</li>
+<li>Bring together to eliminate duplication</li>
+</ul>
+<h3 id="comments">Comments</h3>
+<ul>
+<li>Documentation also plays an important role in abstraction; without comments, you can’t hide complexity.</li>
+<li>If users must read the code of a method in order to use it, then there is no abstraction: all of the complexity of the method is exposed.</li>
+<li>Many of the most important comments are those related to abstractions, such as the top-level documentation for classes and methods.</li>
+<li><strong>The overall idea behind comments is to capture information that was in the mind of the designer but couldn’t be represented in the code.</strong></li>
+<li><strong>Comments should describe things that aren’t obvious from the code.</strong></li>
+<li>One of the most important reasons for comments is abstractions, which include a lot of information that isn’t obvious from the code.</li>
+<li>Developers should be able to understand the abstraction provided by a module without reading any code other than its externally visible declarations.</li>
+<li>Comments categories:
+<ul>
+<li><strong>Interface</strong>: a comment block that immediately precedes the declaration of a module such as a class, data structure, function, or method. The comment describe’s the module’s interface.</li>
+<li><strong>Data structure member</strong>: a comment next to the declaration of a field in a data structure, such as an instance variable or static variable for a class.</li>
+<li><strong>Implementation comment</strong>: a comment inside the code of a method or function, which describes how the code works internally.</li>
+<li><strong>Cross-module comment</strong>: a comment describing dependencies that cross module boundaries.</li>
+</ul>
+</li>
+<li>After you have written a comment, ask yourself the following question: could someone who has never seen the code write the comment just by looking at the code next to the comment? If the answer is yes, as in the examples above, then the comment doesn’t make the code any easier to understand. Comments like these are why some people think that comments are worthless.</li>
+<li>Comments augment the code by providing information at a different level of detail.
+<ul>
+<li>Precision is most useful when commenting variable declarations such as class instance variables, method arguments, and return values. The name and type in a variable declaration are typically not very precise. Comments can fill in missing details such as:
+<ul>
+<li>What are the units for this variable?</li>
+<li>Are the boundary conditions inclusive or exclusive?</li>
+<li>If a null value is permitted, what does it imply?</li>
+<li>If a variable refers to a resource that must eventually be freed or closed, who is responsible for freeing or closing it?</li>
+<li>Are there certain properties that are always true for the variable (invariants), such as “this list always contains at least one entry”?</li>
+</ul>
+</li>
+<li>When documenting a variable, think nouns, not verbs. In other words, focus on what the variable represents, not how it is manipulated.</li>
+</ul>
+</li>
+<li><strong>The best time to write comments is at the beginning of the process, as you write the code</strong>. Writing the comments first makes documentation part of the design process. Not only does this produce better documentation, but it also produces better designs and it makes the process of writing documentation more enjoyable.</li>
+</ul>
+<h4 id="interface-comments">Interface Comments</h4>
+<p>The interface comment for a method includes both higher-level information for abstraction and lower-level details for precision:</p>
+<ul>
+<li>The comment usually starts with a sentence or two describing the behavior of the method as perceived by callers; this is the higher-level abstraction.</li>
+<li>The comment must describe each argument and the return value (if any).
+These comments must be very precise, and must describe any constraints on argument values as well as dependencies between arguments.</li>
+<li>If the method has any side effects, these must be documented in the interface comment. A side effect is any consequence of the method that affects the future behavior of the system but is not part of the result. For example, if the method adds a value to an internal data structure, which can be retrieved by future method calls, this is a side effect; writing to the file system is also a side effect.</li>
+<li>A method’s interface comment must describe any exceptions that can emanate from the method.</li>
+<li>If there are any preconditions that must be satisfied before a method is invoked, these must be described (perhaps some other method must be invoked first; for a binary search method, the list being searched must be sorted). It is a good idea to minimize preconditions, but any that remain must be documented.</li>
+</ul>
+<h4 id="implementation-comments">Implementation Comments</h4>
+<p>The main goal of implementation comments is to help readers understand <em>what</em> the code is doing (not how it does it).</p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/a-philosophy-of-software-design-note/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "a-philosophy-of-software-design-note"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#red-flags">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> RED FLAGS</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#shallow-module">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> Shallow Module</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#information-leakage">
+    <span class="toc-number">&nbsp;1.2.</span>
+    <span class="toc-text"> Information Leakage</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#temporal-decomposition">
+    <span class="toc-number">&nbsp;1.3.</span>
+    <span class="toc-text"> Temporal Decomposition</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#overexposure">
+    <span class="toc-number">&nbsp;1.4.</span>
+    <span class="toc-text"> Overexposure</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#pass-through-method">
+    <span class="toc-number">&nbsp;1.5.</span>
+    <span class="toc-text"> Pass-Through Method</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#repetition">
+    <span class="toc-number">&nbsp;1.6.</span>
+    <span class="toc-text"> Repetition</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#special-general-mixture">
+    <span class="toc-number">&nbsp;1.7.</span>
+    <span class="toc-text"> Special-General Mixture</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#conjoined-methods">
+    <span class="toc-number">&nbsp;1.8.</span>
+    <span class="toc-text"> Conjoined Methods</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#comment-repeats-code">
+    <span class="toc-number">&nbsp;1.9.</span>
+    <span class="toc-text"> Comment Repeats Code</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#implementation-documentation-contaminates-interface">
+    <span class="toc-number">&nbsp;1.10.</span>
+    <span class="toc-text"> Implementation Documentation Contaminates Interface</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#vague-name">
+    <span class="toc-number">&nbsp;1.11.</span>
+    <span class="toc-text"> Vague Name</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#hard-to-pick-name">
+    <span class="toc-number">&nbsp;1.12.</span>
+    <span class="toc-text"> Hard to Pick Name</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#hard-to-describe">
+    <span class="toc-number">&nbsp;1.13.</span>
+    <span class="toc-text"> Hard to Describe</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#excerpt">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> EXCERPT</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#definition">
+    <span class="toc-number">&nbsp;2.1.</span>
+    <span class="toc-text"> Definition</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#symptoms">
+    <span class="toc-number">&nbsp;2.2.</span>
+    <span class="toc-text"> Symptoms</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#modules">
+    <span class="toc-number">&nbsp;2.3.</span>
+    <span class="toc-text"> Modules</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#together-vs-apart">
+    <span class="toc-number">&nbsp;&nbsp;2.3.1.</span>
+    <span class="toc-text"> Together vs Apart</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#comments">
+    <span class="toc-number">&nbsp;&nbsp;2.3.2.</span>
+    <span class="toc-text"> Comments</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#interface-comments">
+    <span class="toc-number">&nbsp;&nbsp;&nbsp;2.3.2.1.</span>
+    <span class="toc-text"> Interface Comments</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;a-philosophy-of-software-design-note&#x2F;#implementation-comments">
+    <span class="toc-number">&nbsp;&nbsp;&nbsp;2.3.2.2.</span>
+    <span class="toc-text"> Implementation Comments</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

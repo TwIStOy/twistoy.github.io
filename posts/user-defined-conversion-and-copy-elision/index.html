@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2019-04-19" id="date">Apr 19, 2019</time></span>
+      
+      
+    </div>
+    <h1>User-defined conversion and Copy elision</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="wen-ti-de-kai-shi">问题的开始</h1>
+<p>问题的开始是同事聊到了我们笔试题的一个问题，是说下面这个代码其实在编译的时候是有问题的。</p>
+<span id="continue-reading"></span><pre data-lang="cpp" class="language-cpp "><code class="language-cpp" data-lang="cpp">struct UserInfo {
+  UserInfo(const std::string&amp; name) : name_(name) {}
+
+ private:
+  std::string name_;
+};
+
+int main() {
+  UserInfo u = &quot;name&quot;;
+}
+</code></pre>
+<h1 id="zui-chu-de-tao-lun-he-si-kao">最初的讨论和思考</h1>
+<p>显然在最开始的时候，我并没有发现这个代码的问题所在，并且被告知了在这段代码里面其实是有两个问题的。</p>
+<p>在这个简单的例子里面，就涉及到了在规范里面两个很不容易注意到的行为，就像标题里聊的 <code>UDC(user-defined conversion)</code> 和 <code>copy-elision</code>。</p>
+<h2 id="guan-yu-yin-shi-zhuan-huan-implicit-conversion">关于隐式转换（implicit conversion）</h2>
+<p>在 <code>main</code> 函数里面唯一的语句，这首先是一个变量的声明和定义，同时还包括了这个变量的初始化（initialize）。在这个变量的初始化阶段，发生了几次类型转换，其中大部分都是隐式的（<code>implicit conversion</code>），并且调用到了不同的构造函数：</p>
+<pre><code>const char[5] =[implicit conversion(1)]=&gt; std::string
+              =[implicit conversion(2)]=&gt; UserInfo
+              =[copy&#x2F;move(3)]=&gt; UserInfo
+</code></pre>
+<p>第一次发生在字符串字面量（string literal）构造 <code>std::string</code> 的时候，显然这是一个隐式转换，因为并没有显式的调用 <code>std::string</code> 的构造函数，并且这个隐式转换显然是 <code>user-defined</code> 的。</p>
+<p>第二次发生在 <code>std::string</code> 构造一个 <code>UserInfo</code> 的时候，这也是一个隐式转换，并且是 <code>user-defined</code> 的。</p>
+<p>这两次隐式转换构成了一个隐式转换链（<code>implicit-conversion sequence</code>），问题就出在这个由两个 <code>user-defined conversion</code> 构成的隐式转换链上。在标准的 <code>16.3.3.1</code> 里讨论了有关于 <code>implicit conversion</code> 和 <code>user-defined conversion</code> 的部分，而在 <code>15.3</code> 里特别提到了：</p>
+<blockquote>
+<p>At most one user-defined conversion (constructor or conversion functions) is implicitly applied to a single value.</p>
+</blockquote>
+<p>在一个隐式转换序列里，只能存在最多一个用户定义的转换。这个条件在标准的隐藏的很深，我在通读标准的时候几次都错过了他们。（但是据说这个问题，曾经在邮件列表里有过蛮激烈的讨论的，但是可惜我那个时候还是个孩子hhh）</p>
+<p>所以在这个问题里，发生 ill-formed 的第一个原因是，在一个 implicit conversion sequence 里面，存在多个 user-defined conversion。</p>
+<h2 id="guan-yu-fu-zhi-xiao-chu-copy-elision">关于复制消除（copy elision）</h2>
+<p>关于复制消除的部分，这里就要提到不同的两个版本，C++17 开始和 C++17 之前。</p>
+<p>在 C++17 之前，并没有明确的提出在什么情况下，可以彻底进行复制消除（这里的彻底的指的是包括不进行是否有可用的 copy/move 构造函数的检查）。</p>
+<p>所以在 C++17 之前，下面的这段代码是会有编译错误的：</p>
+<pre data-lang="cpp" class="language-cpp "><code class="language-cpp" data-lang="cpp">struct Foo {
+  Foo(int) {}
+  Foo(Foo&amp;&amp;) = delete;
+  Foo(const Foo&amp;) = delete;
+};
+
+int main() {
+  Foo a = 1;
+}
+</code></pre>
+<p>可以考虑上面给出的上面那个问题的隐式转换链，这个首先出现的是 source type 的 target type 的不一致，所以出现了一次 user-defined 的 implicit conversion。从类型 <code>int</code> 得到了类型 <code>Foo</code> 的一个 <code>prvalue</code>（这里的 <code>prvalue</code> 很重要）。然后才是从一个 <code>prvalue</code> 构造一个类型 <code>Foo</code> 的对象。</p>
+<p>其实我们显然可以知道，第二个过程是会被优化掉的，一般的编译器都会优化成原地构造的。但是标准在这个时候要求了，在这种时候，即使这部分的内容会优化，但是依旧要进行编译时的检查，检查 copy/move 构造函数是否可用，如果不可用，那这个代码依旧是 ill-formed。</p>
+<p>但是事情在 C++17 中发成了一个很大的改变 <code>11.6.4.3.9</code>，在一个是 prvalue 的时候，这里会用 direct-initalize，而不是尝试使用 copy/move initialize。也就是说，上面例子的代码在 C++17 之后其实是可以通过编译的。</p>
+<p>但是这里要注意，适用的规则是一个 prvalue 的对象，xrvalue 是不可以的。也就是说，下面这样的代码依旧是不能通过编译的：</p>
+<pre data-lang="cpp" class="language-cpp "><code class="language-cpp" data-lang="cpp">struct Foo {
+  Foo(int = 10) {}
+
+  Foo(Foo&amp;&amp;) = delete;
+  Foo(const Foo&amp;) = delete;
+};
+struct Bar {
+  operator Foo&amp;&amp; {
+    return std::move(a);
+  }
+  
+  Foo a;
+};
+
+int main() {
+  Bar b;
+  Foo a = b;
+}
+</code></pre>
+<p>这里虽然做了一次隐式类型转换（从 <code>Bar</code> 到 <code>Foo</code>），但是得到的类型是一个 xrvalue，而 xrvalue 是不适合上面的拷贝消除规则的，所以还会尝试使用 copy/move 构造，得到 ill-formed 的结果。</p>
+<hr />
+<p>文中提到的所有标准文档，都采用最新的 C++ 标准文档（ISO/IEC 14882 2017），除非特别指定此时讨论的C++版本。</p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/user-defined-conversion-and-copy-elision/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "user-defined-conversion-and-copy-elision"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;user-defined-conversion-and-copy-elision&#x2F;#wen-ti-de-kai-shi">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 问题的开始</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;user-defined-conversion-and-copy-elision&#x2F;#zui-chu-de-tao-lun-he-si-kao">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> 最初的讨论和思考</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;user-defined-conversion-and-copy-elision&#x2F;#guan-yu-yin-shi-zhuan-huan-implicit-conversion">
+    <span class="toc-number">&nbsp;2.1.</span>
+    <span class="toc-text"> 关于隐式转换（implicit conversion）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;user-defined-conversion-and-copy-elision&#x2F;#guan-yu-fu-zhi-xiao-chu-copy-elision">
+    <span class="toc-number">&nbsp;2.2.</span>
+    <span class="toc-text"> 关于复制消除（copy elision）</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

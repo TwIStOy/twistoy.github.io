@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2017-07-02" id="date">Jul 02, 2017</time></span>
+      
+      
+    </div>
+    <h1>使用智能指针的默认行为来避免内存泄漏</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <p>2016年的 cppcon 上，Herb Sutter 的演讲中提出了一些关于常用的数据结构如何使用智能指针自动的构造和析构来避免内存泄漏的情况发生。
+可以在这里找到这个演讲的链接：<a href="https://youtu.be/JfmTagWcqoE">https://youtu.be/JfmTagWcqoE</a>。</p>
+<span id="continue-reading"></span><h2 id="zhi-neng-zhi-zhen">智能指针</h2>
+<h3 id="unique-ptr"><code>unique_ptr</code></h3>
+<ol>
+<li>唯一所有权</li>
+<li>离开作用域时，会同时析构指向的对象</li>
+</ol>
+<h3 id="shared-ptr"><code>shared_ptr</code></h3>
+<ol>
+<li>共享所有权</li>
+<li>最后一个指向对象的 <code>shared_ptr</code> 被销毁时，析构指向的对象</li>
+</ol>
+<h3 id="weak-ptr"><code>weak_ptr</code></h3>
+<ol>
+<li>不表示所有权</li>
+<li>使用之前需要先创建一个 <code>shared_ptr</code>（通过 <code>wp.lock()</code>，这个操作会延长指向对象的生命周期到这个临时的 <code>shared_ptr</code> 被销毁时）</li>
+</ol>
+<h2 id="suo-you-quan-ownership">所有权（Ownership）</h2>
+<p>在这里我借用了 <a href="https://www.rust-lang.org/en-US/">Rust</a> 中的一个概念：所有权（Ownership），也就是表示一个对象持有（HAS-A）另一个对象，被持有的对象的生命周期应该和其父对象的生命周期相同。通常，在 C++ 中，我们都会使用数据成员（data member）的方式去表示这样的关系。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class MyClass {
+  Data data;
+  &#x2F;*...*&#x2F;
+};
+</code></pre>
+<p>在这用的使用情况下，如果我们需要一个更灵活一些的方案，可是同时也要具有这种持有的关系，这时候可以选择 <code>unique_ptr</code>，即有了如下方案：（这种方案也可以被称作 <em>Decoupled HAS-A</em> ）</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class MyClass {
+  unique_ptr&lt;Data&gt; pdata;
+  &#x2F;*...*&#x2F;
+};
+</code></pre>
+<h2 id="chang-jian-shi-yong-chang-jing">常见使用场景</h2>
+<h3 id="zhi-xiang-shi-xian-de-zhi-zhen-pimpl-idiom">指向实现的指针（Pimpl Idiom）</h3>
+<p>很多时候我们会有需要将一些实现抽象出来到一个单独的类中，来实现接口和实现分离。在这样的场景下，我们对 <code>pImpl</code> 是不会有改变的，在这样的情况下，使用 <code>const unique_ptr</code>：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;class T&gt;
+using PImpl = const unique_ptr&lt;T&gt;;
+
+class MyClass {
+  class Impl;
+  PImpl&lt;Impl&gt; pImpl;
+  &#x2F;*...*&#x2F;
+};
+</code></pre>
+<h3 id="dong-tai-shu-zu-cheng-yuan-dynamic-array-member">动态数组成员（Dynamic Array Member）</h3>
+<p>这里有两种方案，一种是使用 STL 里的 <code>vector</code>，另一种就是使用 <code>unique_ptr</code>。对于那些长度可能会变化的需求，我倾向于 <code>unique_ptr&lt;vector&gt;</code>；而对于长度偏固定的场景下，直接使用数组的指针我觉得会是一个较好的选择：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class MyClss {
+  const unique_ptr&lt;Data[]&gt; array;
+  int array_size;
+  &#x2F;*...*&#x2F;
+  MyClass (size_t num_data) :
+    array(make_unique&lt;Data[]&gt;(num_data)) {}
+}
+</code></pre>
+<h3 id="shu-tree">树（Tree）</h3>
+<p>一个我们想象中常见的二叉树，在每个节点上保存了其子节点和要保存的数据。</p>
+<p><img src="http://7vijdo.com1.z0.glb.clouddn.com/image/autoupload/blog-tree-1.jpg" alt="" /></p>
+<p>在这样的结构里，我们可以发现父节点持有着它的两个子节点，而且每个子节点仅被其父节点持有，在这样的情况下，显然应该使用 <code>unique_ptr</code>。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class Tree {
+  struct Node {
+    vector&lt;unique_ptr&lt;Node&gt;&gt; children;
+    &#x2F;*...*&#x2F;
+  };
+  unique_ptr&lt;Node&gt; root;
+  &#x2F;*...*&#x2F;
+};
+</code></pre>
+<p>那如果每个节点上还保存了其父节点的信息呢，显然我们不能再使用一个 <code>unique_ptr</code> 来保存父节点的指针，因为这样就和 <code>unique_ptr</code> 的意义冲突了，并且会导致内存泄漏的情况。所以这里，就直接使用 raw pointer 去表示一个节点的父节点就可以了。</p>
+<p>如果我们在程序的其他地方，需要一些额外的指针来指向树中节点所保存的信息，看起来和下图差不多：</p>
+<p><img src="http://7vijdo.com1.z0.glb.clouddn.com/image/autoupload/blog-tree-2.jpg" alt="" /></p>
+<p>在这种情况下，每个节点的所有权就不是唯一的，不再是它的父节点，可能是外部可能的任何一个对象，在这种情况下，就需要把使用的 <code>unique_ptr</code> 变成 <code>shared_ptr</code>。在这个基础上，我们可以方便的对外提供任意节点保存信息的指针（也是一个 <code>shared_ptr</code>）。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class Tree {
+  struct Node {
+    vector&lt;shared_ptr&lt;Node&gt;&gt; children;
+    Data data;
+  };
+  shared_ptr&lt;Node&gt; root;
+  shared_ptr&lt;Data&gt; find(&#x2F;*...*&#x2F;) {
+    &#x2F;*...*&#x2F;
+    return {spn, &amp;(spn-&gt;data)};
+  }
+};
+</code></pre>
+<p>代码的倒数第三行中使用了 <code>shared_ptr</code> 的 <code>aliasing constructor</code>，提供了指向的内容的指针和用于管理这个指针的另一个 <code>shared_ptr</code> 对象。</p>
+<h3 id="shuang-xiang-lian-biao-doubly-linked-list">双向链表（Doubly Linked List）</h3>
+<p>在一个双向链表中，我们用两个指针去表示前节点和后节点，在这样的情况下，我们会出现和上面树中相似的问题，在这种情况下，我们依旧可以使用 <code>unique_ptr + raw pointer</code> 的解决方案。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class LinkedList {
+  struct Node {
+    unique_ptr&lt;Node&gt; next;
+    Node* prev;
+    &#x2F;*... data ...*&#x2F;
+  };
+  unique_ptr&lt;Node&gt; root;
+  &#x2F;*...*&#x2F;
+};
+</code></pre>
+<h3 id="you-xiang-wu-huan-tu-dag">有向无环图（DAG）</h3>
+<p>一个 DAG 和一棵树的区别是：在树中一个节点只能是另一个节点的子节点；而在 DAG 中，一个节点可以是多个节点的后继节点。在这样的基础下，我们把每个节点的 <code>unique_ptr</code> 改成 <code>shared_ptr</code> 就可以工作了。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class DAG {
+  struct Node {
+    vector&lt;shared_ptr&lt;Node&gt;&gt; children;
+    vector&lt;Node*&gt; parents;
+  &#x2F;*… data …*&#x2F;
+  };
+  vector&lt;shared_ptr&lt;Node&gt;&gt; roots;
+};
+</code></pre>
+<h3 id="huan-xing-lian-biao-circular-list">环形链表（Circular List）</h3>
+<p>在环形链表中，我们不可避免的要处理一个节点被多个对象拥有的情况。但是，仔细考虑一下，这样的冲突只会发生在链表的头部，因为它会同时被最后一个节点和表示链表的头指针持有，那在这种情况下，我们可以选择断开最后一个节点和头节点的关系，即按照一个非环的单项链表存储，然后在最后一个节点的部分对其做特殊处理。</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">class CircularList {
+  class Node {
+    unique_ptr&lt;Node&gt; next;
+    unique_ptr&lt;Node&gt;&amp; head;
+  public:
+    auto get_next() { return next ? next.get(): head.get(); }
+  };
+  unique_ptr&lt;Node&gt; head;
+};
+</code></pre>
+<hr />
+<p><strong>Reference</strong></p>
+<ol>
+<li>http://en.cppreference.com/w/cpp/memory/unique_ptr</li>
+<li>http://en.cppreference.com/w/cpp/memory/shared_ptr</li>
+<li>http://en.cppreference.com/w/cpp/memory/weak_ptr</li>
+</ol>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/leak-freedom-in-cpp-by-default/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "leak-freedom-in-cpp-by-default"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#zhi-neng-zhi-zhen">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> 智能指针</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#unique-ptr">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> unique_ptr</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#shared-ptr">
+    <span class="toc-number">&nbsp;1.2.</span>
+    <span class="toc-text"> shared_ptr</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#weak-ptr">
+    <span class="toc-number">&nbsp;1.3.</span>
+    <span class="toc-text"> weak_ptr</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#suo-you-quan-ownership">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> 所有权（Ownership）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#chang-jian-shi-yong-chang-jing">
+    <span class="toc-number">3.</span>
+    <span class="toc-text"> 常见使用场景</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#zhi-xiang-shi-xian-de-zhi-zhen-pimpl-idiom">
+    <span class="toc-number">&nbsp;3.1.</span>
+    <span class="toc-text"> 指向实现的指针（Pimpl Idiom）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#dong-tai-shu-zu-cheng-yuan-dynamic-array-member">
+    <span class="toc-number">&nbsp;3.2.</span>
+    <span class="toc-text"> 动态数组成员（Dynamic Array Member）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#shu-tree">
+    <span class="toc-number">&nbsp;3.3.</span>
+    <span class="toc-text"> 树（Tree）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#shuang-xiang-lian-biao-doubly-linked-list">
+    <span class="toc-number">&nbsp;3.4.</span>
+    <span class="toc-text"> 双向链表（Doubly Linked List）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#you-xiang-wu-huan-tu-dag">
+    <span class="toc-number">&nbsp;3.5.</span>
+    <span class="toc-text"> 有向无环图（DAG）</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;leak-freedom-in-cpp-by-default&#x2F;#huan-xing-lian-biao-circular-list">
+    <span class="toc-number">&nbsp;3.6.</span>
+    <span class="toc-text"> 环形链表（Circular List）</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2015-09-01" id="date">Sep 01, 2015</time></span>
+      
+      
+    </div>
+    <h1>cJSON代码阅读（parse）部分</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">static const char *skip(const char *in) {
+  while (in &amp;&amp; *in &amp;&amp; (unsigned char)*in&lt;=32) in++;
+  return in;
+}
+</code></pre>
+<p>跳过<strong>空白字符</strong>。空白字符即ASCII小于等于32的字符。（我还特意查了ascii的表…）。<em>这里我可能会用isspace（掩面逃…）</em></p>
+<span id="continue-reading"></span><pre><code>    static const char *parse_value(cJSON *item,const char *value)
+    {
+        if (!value)                     return 0;
+        if (!strncmp(value,&quot;null&quot;,4))   { item-&gt;type=cJSON_NULL;  return value+4; }
+        if (!strncmp(value,&quot;false&quot;,5))  { item-&gt;type=cJSON_False; return value+5; }
+        if (!strncmp(value,&quot;true&quot;,4))   { item-&gt;type=cJSON_True; item-&gt;valueint=1;  return value+4; }
+        if (*value==&#x27;\&quot;&#x27;)               { return parse_string(item,value); }
+        if (*value==&#x27;-&#x27; || (*value&gt;=&#x27;0&#x27; &amp;&amp; *value&lt;=&#x27;9&#x27;))    { return parse_number(item,value); }
+        if (*value==&#x27;[&#x27;)                { return parse_array(item,value); }
+        if (*value==&#x27;{&#x27;)                { return parse_object(item,value); }
+    
+        ep=value;return 0;
+    }
+</code></pre>
+<p>这里是parser的核心。判断该读入的元素类型。null，true，false这三个简单类型可以直接处理。其他的分别交给parse_number，parse_array和parse_object处理。ep是这里用于错误处理的指针，当出错的时候，ep指针里保存的就是当前出现错误的位置。</p>
+<p>首先是parse_string部分：</p>
+<pre><code>    static const unsigned char firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+    static const char *parse_string(cJSON *item,const char *str)
+    {
+        const char *ptr=str+1;char *ptr2;char *out;int len=0;unsigned uc,uc2;
+        if (*str!=&#x27;\&quot;&#x27;) {ep=str;return 0;}
+    
+        while (*ptr!=&#x27;\&quot;&#x27; &amp;&amp; *ptr &amp;&amp; ++len) if (*ptr++ == &#x27;\\&#x27;) ptr++;
+    
+        out=(char*)cJSON_malloc(len+1);
+        if (!out) return 0;
+    
+        ptr=str+1;ptr2=out;
+        while (*ptr!=&#x27;\&quot;&#x27; &amp;&amp; *ptr)
+        {
+            if (*ptr!=&#x27;\\&#x27;) *ptr2++=*ptr++;
+            else
+            {
+                ptr++;
+                switch (*ptr)
+                {
+                    case &#x27;b&#x27;: *ptr2++=&#x27;\b&#x27;; break;
+                    case &#x27;f&#x27;: *ptr2++=&#x27;\f&#x27;; break;
+                    case &#x27;n&#x27;: *ptr2++=&#x27;\n&#x27;; break;
+                    case &#x27;r&#x27;: *ptr2++=&#x27;\r&#x27;; break;
+                    case &#x27;t&#x27;: *ptr2++=&#x27;\t&#x27;; break;
+                    case &#x27;u&#x27;:
+                        uc=parse_hex4(ptr+1);ptr+=4;
+    
+                        if ((uc&gt;=0xDC00 &amp;&amp; uc&lt;=0xDFFF) || uc==0)    break;
+    
+                        if (uc&gt;=0xD800 &amp;&amp; uc&lt;=0xDBFF)
+                        {
+                            if (ptr[1]!=&#x27;\\&#x27; || ptr[2]!=&#x27;u&#x27;)    break;
+                            uc2=parse_hex4(ptr+3);ptr+=6;
+                            if (uc2&lt;0xDC00 || uc2&gt;0xDFFF)       break;
+                            uc=0x10000 + (((uc&amp;0x3FF)&lt;&lt;10) | (uc2&amp;0x3FF));
+                        }
+    
+                        len=4;if (uc&lt;0x80) len=1;else if (uc&lt;0x800) len=2;else if (uc&lt;0x10000) len=3; ptr2+=len;
+    
+                        switch (len) {
+                            case 4: *--ptr2 =((uc | 0x80) &amp; 0xBF); uc &gt;&gt;= 6;
+                            case 3: *--ptr2 =((uc | 0x80) &amp; 0xBF); uc &gt;&gt;= 6;
+                            case 2: *--ptr2 =((uc | 0x80) &amp; 0xBF); uc &gt;&gt;= 6;
+                            case 1: *--ptr2 =(uc | firstByteMark[len]);
+                        }
+                        ptr2+=len;
+                        break;
+                    default:  *ptr2++=*ptr; break;
+                }
+                ptr++;
+            }
+        }
+        *ptr2=0;
+        if (*ptr==&#x27;\&quot;&#x27;) ptr++;
+        item-&gt;valuestring=out;
+        item-&gt;type=cJSON_String;
+        return ptr;
+    }
+</code></pre>
+<p>首先是遍历了一次整个string，统计出一共的字符个数，存在了len里，中间遇到转义的部分跳过了后面的字符。个数统计好之后，申请内存。这里的<code>cJSON_malloc</code>就是原本的<code>malloc</code>。在这个函数的定义出可以找到：</p>
+<pre><code>    static void *(*cJSON_malloc)(size_t sz) = malloc;
+</code></pre>
+<p>重新从头遍历整个string，不转义的部分是不用处理的。需要特殊处理的就是转义的部分，其实这部分也只有utf-16到utf-8的编码转换问题。（这里的magic number实在是太多了，我还没不知道utf-16和utf-8的编码方式。实在是看不懂了。）</p>
+<pre><code>    static const char *parse_number(cJSON *item,const char *num)
+    {
+        double n=0,sign=1,scale=0;int subscale=0,signsubscale=1;
+    
+        if (*num==&#x27;-&#x27;) sign=-1,num++;
+        if (*num==&#x27;0&#x27;) num++;
+        if (*num&gt;=&#x27;1&#x27; &amp;&amp; *num&lt;=&#x27;9&#x27;) do  n=(n*10.0)+(*num++ -&#x27;0&#x27;);   while (*num&gt;=&#x27;0&#x27; &amp;&amp; *num&lt;=&#x27;9&#x27;);
+        if (*num==&#x27;.&#x27; &amp;&amp; num[1]&gt;=&#x27;0&#x27; &amp;&amp; num[1]&lt;=&#x27;9&#x27;) {num++;        do  n=(n*10.0)+(*num++ -&#x27;0&#x27;),scale--; while (*num&gt;=&#x27;0&#x27; &amp;&amp; *num&lt;=&#x27;9&#x27;);}
+        if (*num==&#x27;e&#x27; || *num==&#x27;E&#x27;)
+        {   num++;if (*num==&#x27;+&#x27;) num++; else if (*num==&#x27;-&#x27;) signsubscale=-1,num++;
+            while (*num&gt;=&#x27;0&#x27; &amp;&amp; *num&lt;=&#x27;9&#x27;) subscale=(subscale*10)+(*num++ - &#x27;0&#x27;);
+        }
+    
+        n=sign*n*pow(10.0,(scale+subscale*signsubscale));
+    
+        item-&gt;valuedouble=n;
+        item-&gt;valueint=(int)n;
+        item-&gt;type=cJSON_Number;
+        return num;
+    }
+</code></pre>
+<p>这里数字的处理就简单很多了。 sign表示有没有负号，如果有的话sign是-1，否则sign为1。<br />
+去掉前导0之后，读入每位存在n里。 发现有&quot;.&quot;，并且下一位是数字的话，就说明这是一个小数，开始读入小数点之后的部分。这里用scale来表示当前的数的小数点应该向左移动几位。（这样是不是也同样保证了精度呢？） 读入E，科学计数法表示。处理方式和前面一样。 最后计算出n就可以了。这里把浮点数和整数放在一起处理了。只要在最后valueint只取n的整数部分就可以了。（我自己尝试实现的时候，把整数和小数分开读的，在存类型的时候也尝试把他们分开了。）这种方式需要在输出的时候做一个特殊处理，判断一下valuedouble和valueint之间的差，如果小于给定的eps那就认为这个数字是一个整数，否则认为是小数。</p>
+<pre><code>    static const char *parse_array(cJSON *item,const char *value)
+    {
+        cJSON *child;
+        if (*value!=&#x27;[&#x27;)    {ep=value;return 0;}
+    
+        item-&gt;type=cJSON_Array;
+        value=skip(value+1);
+        if (*value==&#x27;]&#x27;) return value+1;
+    
+        item-&gt;child=child=cJSON_New_Item();
+        if (!item-&gt;child) return 0;
+        value=skip(parse_value(child,skip(value)));
+        if (!value) return 0;
+    
+        while (*value==&#x27;,&#x27;)
+        {
+            cJSON *new_item;
+            if (!(new_item=cJSON_New_Item())) return 0;
+            child-&gt;next=new_item;new_item-&gt;prev=child;child=new_item;
+            value=skip(parse_value(child,skip(value+1)));
+            if (!value) return 0;
+        }
+    
+        if (*value==&#x27;]&#x27;) return value+1;
+        ep=value;return 0;
+    }
+</code></pre>
+<p>接下来是关于数组的处理。和其他时候一样，先判断起始字符合法性。然后重复： 1. 新建cJSON对象<br />
+2. 读掉空白字符<br />
+3. 读入这个对象<br />
+4. 读掉空白字符<br />
+5. 判断这个字符是否是“,“。如果是，转到1，如果不是判断结尾字符合法性，退出。<br />
+数组里面的元素，是用了一个双向链表实现的。具体的定义在cJSON这个结构体的定义处给出了。</p>
+<pre><code>    static const char *parse_object(cJSON *item,const char *value)
+    {
+        cJSON *child;
+        if (*value!=&#x27;{&#x27;)    {ep=value;return 0;}
+    
+        item-&gt;type=cJSON_Object;
+        value=skip(value+1);
+        if (*value==&#x27;}&#x27;) return value+1;
+    
+        item-&gt;child=child=cJSON_New_Item();
+        if (!item-&gt;child) return 0;
+        value=skip(parse_string(child,skip(value)));
+        if (!value) return 0;
+        child-&gt;string=child-&gt;valuestring;child-&gt;valuestring=0;
+        if (*value!=&#x27;:&#x27;) {ep=value;return 0;}
+        value=skip(parse_value(child,skip(value+1)));
+        if (!value) return 0;
+    
+        while (*value==&#x27;,&#x27;)
+        {
+            cJSON *new_item;
+            if (!(new_item=cJSON_New_Item()))   return 0;
+            child-&gt;next=new_item;new_item-&gt;prev=child;child=new_item;
+            value=skip(parse_string(child,skip(value+1)));
+            if (!value) return 0;
+            child-&gt;string=child-&gt;valuestring;child-&gt;valuestring=0;
+            if (*value!=&#x27;:&#x27;) {ep=value;return 0;}
+            value=skip(parse_value(child,skip(value+1)));
+            if (!value) return 0;
+        }
+    
+        if (*value==&#x27;}&#x27;) return value+1;
+        ep=value;return 0;
+    }
+</code></pre>
+<p>最后有关于parse的就是关于object对象的parse了。常规的判断其实字符，读掉空白字符。这里先判断了一次结束字符来看是不是空的。 因为一旦有了元素之后，在判断下一个元素是否存在的时候，判断的条件就变成了“,”。这部分在数组中有一样的处理。 这里整体的过程其实和数组的区别只在读入单个元素的方法上： 先读入一个string，读冒号“:”，读value。然后每个child的属性里的string部分保存了这个value的名字。（这里这个保存方式，是不是在get的时候的效率会出现问题呢。感觉这里如果多处理一点，对string串做一个hash可能效果会好一点。）</p>
+<p>这样parse细节的部分就都看完了。cJSON_Parse函数是对cJSON_ParseWithOpts的一个封装。cJSON_ParseWithOpts函数处理了读入一个value之外的就是判断了是否需要null作为结束，和返回值存到哪里的问题。代码也很简单：</p>
+<pre><code>    cJSON *cJSON_ParseWithOpts(const char *value,const char **return_parse_end,int require_null_terminated)
+    {
+        const char *end=0;
+        cJSON *c=cJSON_New_Item();
+        ep=0;
+        if (!c) return 0;
+    
+        end=parse_value(c,skip(value));
+        if (!end)   {cJSON_Delete(c);return 0;}
+    
+        if (require_null_terminated) {end=skip(end);if (*end) {cJSON_Delete(c);ep=end;return 0;}}
+        if (return_parse_end) *return_parse_end=end;
+        return c;
+    }
+</code></pre>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/cjson-code-reading-parser/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "cjson-code-reading-parser"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

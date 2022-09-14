@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2020-09-14" id="date">Sep 14, 2020</time></span>
+      
+      
+    </div>
+    <h1>搞了个 C++ 构建系统</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <p>我平时的工作内容是开发在服务端上运行的网络程序，主要语言是 C++，并且几乎全部跑在统一的机器环境上。所以我们一直以来都在使用一套简单从 <a href="https://github.com/chen3feng/blade-build">blade-build</a> 魔改来的编译系统。这个系统的本质是一个 <code>Unix Makefile</code> 的生成器，这个生成器使用 <code>Python2</code> 编写，代码有点难以维护。（毕竟使用动态语言的东西就是这样，出活还是很快的，但是时间一长了，代码就变的很难维护。因为后来的人，很难完全理解其中每个变量的类型，这对于我这种长期写静态强类型语言的人来说，是很痛苦的。）</p>
+<span id="continue-reading"></span>
+<p>在这样的基础上，我就萌生了把这套系统推倒重来的想法，这次我想用一个大家都熟悉，并且一定会写的语言来完成，它还一定是强类型的。在这几个条件下面，我超爱的 <code>Rust</code> 就被我排除在外了，因为好像我们周围会写的人也不是很多。再加上人家 <code>cmake</code> 也是用 C++ 来写的，我一想，我应该也比人家不差啥。再说，我还可以去 <code>cmake</code> 里面去偷很多实现出来。就这么决定了，用 C++ 来实现这个新的构建系统。</p>
+<h1 id="jk-build"><a href="https://github.com/TwIStOy/jk-build">JK-Build</a></h1>
+<p>首先就是名字了，为啥叫 <code>jk</code>，那肯定有很多不可爱的人有奇奇怪怪的想法了！我当时起这个名字的时候，完全是图这两个按键在键盘上位于很近的位置，并且由于我是个 <code>vim</code> 的用户，其实手也常年在这两个按键附近，他们真的很近，很方便，就随手用了这个名字。</p>
+<h2 id="na-xian-zai-de-xi-tong-you-sha-wen-ti-ni">那现在的系统有啥问题呢</h2>
+<ul>
+<li>首先就是，原罪之一就是 <code>Python</code>。这个系统生成 <code>Makefile</code> 的速度在有的时候，它实在是有点慢了。</li>
+<li>如果 <code>BUILD</code> 文件有改动了，它需要自己手动运行命令来重新生成。</li>
+<li>对于 lint 来说，它的规则是尝试 <code>lint</code> 所有文件的，但是其实有很多文件是写出来放在那里，可以只搞了一半的（我就经常这样）。在这种时候我的代码是没法通过编译的，更不可能过 lint 了。</li>
+<li>没有进度条。看看人家 <code>cmake</code>，还有个进度显示呢。这不就决定了我在编译的时候，是去喝杯咖啡，还是去拿个可乐嘛！</li>
+<li>维护困难。<code>Python</code> 的代码有点难以维护，反正我在改的时候，是全靠着 <code>print</code>，到运行的时候观察每个变量到底是什么类型来 <code>debug</code> 的。</li>
+<li>对于 <code>clang-base</code> 的工具，没有过匹配。大部分的，C++ 的代码检查和补全工具，其实都是建立在 <code>clang</code> 之上的，而 <code>clang</code> 会需要 compile database 来找到每个文件应该如何被编译，然后才能有 AST 或者其他的补全、提示什么的。</li>
+</ul>
+<h2 id="na-he-yi-qian-you-shi-yao-bu-tong-ni">那和以前有什么不同呢</h2>
+<h3 id="build-wen-jian-he-targets"><code>BUILD</code> 文件和 <code>targets</code></h3>
+<p>从 <code>BUILD</code> 文件来看，是没什么不同的：</p>
+<ul>
+<li><code>BUILD</code> 文件依旧是 <code>Python</code> 的语法。</li>
+<li>所有的目标构建依旧是一些 <code>Python</code> 的函数。</li>
+<li>暂时来说，可用的构建目标类型也没有增加。（毕竟完全兼容旧系统就有很多的工作了）</li>
+</ul>
+<p>新的系统，第一个目标就是完全兼容旧的所有已有的 <code>BUILD</code> 文件。毕竟，迁移的工作难度小了，新的系统才容易被大家接受。所以，所有的 <code>BUILD</code> 文件还依旧会是以前那样：</p>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">cc_library(name = &quot;base&quot;,
+           cppflags = [ &quot;-Ilibrary&quot;, ],
+           srcs = [ &quot;*.cpp&quot; ],
+           excludes = [ &quot;*_test.cpp&quot; ],
+           ldflags = [ &quot;-ldl&quot; ],
+           deps = [
+                    &quot;&#x2F;&#x2F;library&#x2F;logging&#x2F;BUILD:logging&quot;,
+                    &quot;&#x2F;&#x2F;library&#x2F;memory&#x2F;BUILD:memory&quot;,
+                    &quot;:clock&quot;,
+                  ],
+           )
+</code></pre>
+<p>但是从可用的参数和意义上来说，还是有很多不同的。比如，构建目标 <code>cc_library</code> 现在有个参数叫 <code>cppflags</code>，现在我们就面临着这个参数的值没法继承的问题。往往如果在一个 target 里写了一个 <code>-Ixxxx</code> 的参数，在依赖它的 target 里面还是不可避免的要写上。所以在新的系统中，给 <code>cc_library</code> 以及它的所有派生目标都加入了可以继承的，<code>includes</code> 和 <code>defines</code> 参数，用来传递信息给依赖这个目标的目标。</p>
+<p>对于这部分的变化，就去文档上看就好啦。（虽然现在还没有）</p>
+<h3 id="bian-yi-jin-du">编译进度</h3>
+<p>还有进度条的加入。新的构建系统，在编译的时候，会有一个和 <code>cmake</code> 一样的计数进度的显示。这个地方 <code>cmake</code> 是通过统计一个目录下的文件个数来实现的，非常巧妙。具体的实现是，在一个编译命令的提示信息显示的同时，在一个特定的目录下也 <code>touch</code> 出来一个独一无二的文件，并且进度就应该是这个目录下的文件个数除以总的应有的文件个数。那如果文件没有改变怎么办？不会编译，那对应的计数不就没法统计进去了嘛？是的！所以，它还维护了一份总的计数给到一个 <code>target</code> 最后的命令上，这个命令是无论如何都会强制执行的，它会一次 <code>touch</code> 这个 <code>target</code> 应有的全部的文件。比如像这样：</p>
+<pre data-lang="makefile" class="language-makefile "><code class="language-makefile" data-lang="makefile">all: lib.a
+.PHONY: all
+
+lib.a: a.o b.o c.o d.o e.o
+  @jk-print --number=1,2,3,4,5,6 &#x27;lib.a&#x27;
+  ...
+
+a.o: a.cpp a.h
+  @jk-print --number=1 &#x27;compiling a.cpp&#x27;
+  ...
+
+b.o: b.cpp b.h
+  @jk-print --number=2 &#x27;compiling b.cpp&#x27;
+  ...
+
+c.o: c.cpp c.h
+  @jk-print --number=3 &#x27;compiling c.cpp&#x27;
+  ...
+
+d.o: d.cpp d.h
+  @jk-print --number=4 &#x27;compiling d.cpp&#x27;
+  ...
+
+e.o: e.cpp e.h
+  @jk-print --number=5 &#x27;compiling e.cpp&#x27;
+  ...
+</code></pre>
+<p>这样就可以完美的把没有进行编译的文件的都补上了。</p>
+<h3 id="compile-database">compile database</h3>
+<p>现在在生成 <code>Unix Makefile</code> 的同时，还会在项目的根目录生成一个 <code>compile_commands.json</code> 文件，作为其他 <code>clang-base</code> 的工具的基础。你可以把它和比如 <code>clangd</code> 或者 <code>ccls</code> 来配合。提供项目代码的补全、提示个高亮之类的功能。当然，如果你会自己写一些工具的话，就更好了！</p>
+<h3 id="nei-zhi-de-cmake-base-de-di-san-fang-ku-zhi-chi">内置的 <code>cmake-base</code> 的第三方库支持</h3>
+<p>原本使用一个第三方库，那可麻烦了。我们要自己写一个用来下载安装这个第三方库的一个脚本。自己要小心的处理好，下载文件的逻辑，是不是使用的代理。文件下载之后是不是完整，要不要进行 <code>md5</code> 校验。文件怎么解压，包括后面的 <code>cmake</code> 命令怎么搞，怎么填写这一系列事情。虽然我尝试将一部分工作，封装在了一些内置的包里面，但是依旧有点麻烦。所以这次趁着重写，干脆就重新完整的提供了一个内置的支持！</p>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">cmake_library(
+  url = &quot;http:&#x2F;&#x2F;xxxxx.xxx&#x2F;xxx.tar.gz&quot;,
+  sha256 = &quot;xxxxxx&quot;,
+  type = &quot;tar.gz&quot;,
+  header_only = False,
+  job = 10,
+)
+</code></pre>
+<h3 id="du-li-de-jin-cheng">独立的进程</h3>
+<p>现在终于不再依赖，所有的项目都是 <code>media_build</code> 的一个子目录了！你可以任意组织你的项目目录，可以随意的把不管是 <code>libray</code> 还是 <code>protocol</code> 都作为一个 <code>sub-project</code> 放在自己的项目目录里，用自己想用的任意方式来管理！</p>
+<h2 id="zui-hou-de-zui-hou">最后的最后</h2>
+<p>不过，现在还在开发过程啦。
+还有一些对以前的兼容没有实现。但是这也已经是一个全新的构建系统了！最初搞的时候，不光考虑了兼容，很多新的功能还有参数设计，也参考了 <code>blaze</code>，<code>buck</code> 还有 <code>cmake</code> 的样子。也应该算是取出来这三个里面，我认为用起来比较方便，舒服的部分吧。</p>
+<p>不过缺点还是，这个系统的最初目标就是构建服务端的程序的，对于环境方面没有过多的考虑。所以基本不兼容 <code>windows</code>，<code>macos</code> 能不能用还有全看缘分。这个就没啥计划了… 要是恰好能用！那可太好了！</p>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/cpp-build-system/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "cpp-build-system"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#jk-build">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> JK-Build</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#na-xian-zai-de-xi-tong-you-sha-wen-ti-ni">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> 那现在的系统有啥问题呢</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#na-he-yi-qian-you-shi-yao-bu-tong-ni">
+    <span class="toc-number">&nbsp;1.2.</span>
+    <span class="toc-text"> 那和以前有什么不同呢</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#build-wen-jian-he-targets">
+    <span class="toc-number">&nbsp;&nbsp;1.2.1.</span>
+    <span class="toc-text"> BUILD 文件和 targets</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#bian-yi-jin-du">
+    <span class="toc-number">&nbsp;&nbsp;1.2.2.</span>
+    <span class="toc-text"> 编译进度</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#compile-database">
+    <span class="toc-number">&nbsp;&nbsp;1.2.3.</span>
+    <span class="toc-text"> compile database</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#nei-zhi-de-cmake-base-de-di-san-fang-ku-zhi-chi">
+    <span class="toc-number">&nbsp;&nbsp;1.2.4.</span>
+    <span class="toc-text"> 内置的 cmake-base 的第三方库支持</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#du-li-de-jin-cheng">
+    <span class="toc-number">&nbsp;&nbsp;1.2.5.</span>
+    <span class="toc-text"> 独立的进程</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp-build-system&#x2F;#zui-hou-de-zui-hou">
+    <span class="toc-number">&nbsp;1.3.</span>
+    <span class="toc-text"> 最后的最后</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

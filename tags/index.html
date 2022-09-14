@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+  <div id="Tags">
+    <h1>Tags</h1>
+    
+    <ul class="tag-list" itemprop="keywords">
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;acm&#x2F;" rel="tag">acm</a>
+        <span class="tag-list-count">6</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;algorithm&#x2F;" rel="tag">algorithm</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;auto&#x2F;" rel="tag">auto</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;backdoor&#x2F;" rel="tag">backdoor</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;black-magic&#x2F;" rel="tag">black-magic</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;build-system&#x2F;" rel="tag">build-system</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;c&#x2F;" rel="tag">c++</a>
+        <span class="tag-list-count">21</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;c-11&#x2F;" rel="tag">c++11</a>
+        <span class="tag-list-count">10</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;c-17&#x2F;" rel="tag">c++17</a>
+        <span class="tag-list-count">2</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;c-20&#x2F;" rel="tag">c++20</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;clion&#x2F;" rel="tag">cLion</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;coc-nvim&#x2F;" rel="tag">coc.nvim</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;compile-time&#x2F;" rel="tag">compile time</a>
+        <span class="tag-list-count">3</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;concurrency&#x2F;" rel="tag">concurrency</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;constexpr&#x2F;" rel="tag">constexpr</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;cpo&#x2F;" rel="tag">cpo</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;crtp&#x2F;" rel="tag">crtp</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;data-structure&#x2F;" rel="tag">data structure</a>
+        <span class="tag-list-count">2</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;decltype&#x2F;" rel="tag">decltype</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;distribute-system&#x2F;" rel="tag">distribute-system</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;engineering&#x2F;" rel="tag">engineering</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;feelings&#x2F;" rel="tag">feelings</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;garbage-collection&#x2F;" rel="tag">garbage collection</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;gtest&#x2F;" rel="tag">gtest</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;interface&#x2F;" rel="tag">interface</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;japanese-literature&#x2F;" rel="tag">japanese-literature</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;language&#x2F;" rel="tag">language</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;latex&#x2F;" rel="tag">latex</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;lsp&#x2F;" rel="tag">lsp</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;macro&#x2F;" rel="tag">macro</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;memory-leak&#x2F;" rel="tag">Memory Leak</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;memory-model&#x2F;" rel="tag">memory-model</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;meta-programming&#x2F;" rel="tag">meta-programming</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;module&#x2F;" rel="tag">module</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;niebloid&#x2F;" rel="tag">niebloid</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;note&#x2F;" rel="tag">note</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;operator-new&#x2F;" rel="tag">operator new</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;override&#x2F;" rel="tag">override</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;ownership-system&#x2F;" rel="tag">ownership system</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;parser&#x2F;" rel="tag">parser</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;paxos&#x2F;" rel="tag">paxos</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;pointer&#x2F;" rel="tag">pointer</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;python&#x2F;" rel="tag">Python</a>
+        <span class="tag-list-count">5</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;python3&#x2F;" rel="tag">python3</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;range-base-for&#x2F;" rel="tag">range-base-for</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;ranges&#x2F;" rel="tag">ranges</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;reading&#x2F;" rel="tag">reading</a>
+        <span class="tag-list-count">3</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;reference&#x2F;" rel="tag">reference</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;reflection&#x2F;" rel="tag">reflection</a>
+        <span class="tag-list-count">2</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;resume&#x2F;" rel="tag">Resume</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;rust&#x2F;" rel="tag">rust</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;sfinae&#x2F;" rel="tag">sfinae</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;shared-ptr&#x2F;" rel="tag">shared_ptr</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;standard&#x2F;" rel="tag">standard</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;string&#x2F;" rel="tag">string</a>
+        <span class="tag-list-count">3</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;summary&#x2F;" rel="tag">summary</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;template&#x2F;" rel="tag">template</a>
+        <span class="tag-list-count">8</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;texlab&#x2F;" rel="tag">texlab</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;tips&#x2F;" rel="tag">tips</a>
+        <span class="tag-list-count">4</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;unique-ptr&#x2F;" rel="tag">unique_ptr</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;unittest&#x2F;" rel="tag">unittest</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;uvalive&#x2F;" rel="tag">uvalive</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;vim&#x2F;" rel="tag">vim</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;virtual&#x2F;" rel="tag">virtual</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;yearly&#x2F;" rel="tag">yearly</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+      <li class="tag-list-item">
+        <a class="tag-list-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;tags&#x2F;zip&#x2F;" rel="tag">zip</a>
+        <span class="tag-list-count">1</span>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+          
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>

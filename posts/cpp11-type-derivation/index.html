@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta itemprop="name" content="核桃的炼金工坊" />
+  <meta itemprop="description" content="" />
+  <link rel="icon" href=https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;6359934>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.6/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark-reasonable.min.css">
+
+  <link rel="stylesheet" href="https://twistoy.com/tmp.css" />
+  <style>
+    @font-face {
+      font-family: BenderLight;
+      src: local("Bender"), url("/font/BenderLight.ttf");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: local("JetBrains Mono"),
+        url("/font/JetBrainsMono-Regular.woff2") format("woff2");
+    }
+  </style>
+  <title>核桃的炼金工坊</title>
+
+  <body>
+    <header>
+      <nav>
+        
+        <a href="https://twistoy.com/">HOME</a>
+        
+        <a href="https://twistoy.com/categories">CATEGORIES</a>
+        
+        <a href="https://twistoy.com/tags">TAGS</a>
+        
+        <a href="https://twistoy.com/about">ABOUT</a>
+        
+        <a href="https://twistoy.com/reading">READING-LIST</a>
+        
+        <a href="https://twistoy.com/rss.xml">RSS</a>
+        
+      </nav>
+    </header>
+
+    <main>
+      <article>
+
+<div id="post-bg">
+  <div id="post-title">
+    <div id="post-info">
+      
+      <span>date: <time datetime="2017-02-09" id="date">Feb 09, 2017</time></span>
+      
+      
+    </div>
+    <h1>C++ 中的类型推导</h1>
+    <hr />
+  </div>
+  <div id="post-content">
+    <h1 id="auto-de-ji-ben-shi-yong">auto 的基本使用</h1>
+<p><code>auto</code> 关键字被在变量声明或者作为函数返回值的占位符，在这两个位置的使用是可以通过单个等号右边，或者函数调用来确定 <code>auto</code> 具体应该成为什么类型的，比如像下面这样：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">auto iter = map.begin();
+template&lt;typename T, typename U&gt;
+auto func(T a, U b) -&gt; decltype(a + b);
+</code></pre>
+<span id="continue-reading"></span>
+<p>在 C++14 中，后面的 <code>decltype</code> 部分也可以被省略，可以通过返回的表达式来直接推导，比如这样：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">template&lt;typename T, typename U&gt;
+auto func(T a, U b) {
+  return a + b;
+}
+</code></pre>
+<h2 id="for-range-loop">for-range loop</h2>
+<p>还可以被用于在 for-range loop 中使用，作为循环变量类型的占位。</p>
+<h3 id="for-range-loop-de-zhan-kai">for-range loop 的展开</h3>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">{
+  auto&amp;&amp; __range = range_expression;
+  for (auto __begin = begin_expr, __end = end_expr; __begin != __end; ++__begin) {
+    range_declaration = *__begin;
+    loop_statement;
+  }
+}
+</code></pre>
+<p>展开中的 <code>begin_expr</code> 和 <code>end_expr</code> 都分别用 <code>std::begin(you_container)</code> 和 <code>std::end(you_container)</code> 来得到其实和终止的迭代器。
+在这两个函数的内部会分别调用 <code>begin()</code> 和 <code>end()</code> 的成员函数来确定边界，边界应该是左闭右开的。</p>
+<p>所以如果想要通过 for-range loop 来遍历自定义的数据结构的话，需要为这个数据结构提供 <code>begin()</code> 和 <code>end()</code> 两个成员函数，并且提供一个迭代器类型，
+迭代器类型需要可以拷贝，并且重载了 <code>!=</code> 、前置 <code>++</code> 运算符和解引用（<code>*</code>）运算符。</p>
+<h3 id="auto-zhan-wei-fu-de-shi-yong">auto 占位符的使用</h3>
+<pre><code>for (auto x: m) {
+  ...
+}
+</code></pre>
+<p>这个占位符有四种写法：</p>
+<pre><code>for (auto x: m);
+for (auto&amp; x: m);
+for (const auto&amp; x: m);
+for (auto&amp;&amp; x: m);
+</code></pre>
+<h4 id="for-auto-x-m"><code>for (auto x: m)</code></h4>
+<p>这种写法情况，被遍历的每一个元素都会被拷贝一次，也就是说在 <code>for</code> 的代码块中使用的是被遍历元素的一个拷贝。
+所以这里就有一个情况是不能使用的，就是如果被遍历元素的类型不能拷贝，那么就不能用，比如 <code>std::unique_ptr</code>。</p>
+<h4 id="for-auto-x-m-1"><code>for (auto&amp; x: m)</code></h4>
+<p>这样的写法大部分情况是没有问题的，元素不会被拷贝，而且可以在遍历的时候被修改。那么唯一会出问题的情况就是被遍历的对象是 <code>vector&lt;bool&gt;</code> 的时候。
+<code>vector&lt;bool&gt;</code> 是 <code>vector&lt;T&gt;</code> 的一个特化，使用了位去存储元素，所以在遍历的时候返回的是一个 bit reference 对象，这个对象是不能被非 const 的
+左值引用中。所以在这种情况下，是不能用这种遍历方法的。</p>
+<h4 id="for-const-auto-x-m"><code>for (const auto&amp; x: m)</code></h4>
+<p>const 的左值引用作为在 C++ 中的万能类型，可以接受这个类型的任何对象，除了元素不能修改之外，可以在大部分情况中使用。作为引用，也不会引起额外的拷贝开销。</p>
+<h3 id="for-auto-x-m-2"><code>for (auto&amp;&amp; x: m)</code></h3>
+<p><code>auto&amp;&amp;</code> 可以被称为 Universal References，这里不是指它能兼容所有的引用类型，而是会因为引用折叠的原因可以根据 <code>auto</code> 推导出来的类型对实际类型做出改变。
+所以如果在这里使用这种写法的话，就可以接受任意类型，并且可以修改其中的元素。</p>
+<h1 id="auto-he-decltype-de-tui-dao"><code>auto</code> 和 <code>decltype</code> 的推导</h1>
+<h2 id="auto-de-tui-dao"><code>auto</code> 的推导</h2>
+<p>不包含引用的推导：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">auto a = 1; &#x2F;&#x2F; auto -&gt; int, a -&gt; int
+auto b = new auto(2); &#x2F;&#x2F; auto int*, a -&gt; int*
+</code></pre>
+<p>包含指针的推导：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">int a = 1;
+auto *b = &amp;a; &#x2F;&#x2F; auto -&gt; int, b -&gt; int*
+auto c = &amp;a; &#x2F;&#x2F; auto - int*, c -&gt; int*
+</code></pre>
+<p>包含引用的推导：</p>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">int a = 1;
+auto&amp; d = a; &#x2F;&#x2F; auto -&gt; int, d -&gt; int&amp;
+auto e = a; &#x2F;&#x2F; auto -&gt; int, e -&gt; int
+
+&#x2F;&#x2F; CV 限定会在 auto 的推导中被丢弃
+const auto f = a; &#x2F;&#x2F; auto -&gt; int, f -&gt; const int
+auto g = f; &#x2F;&#x2F; auto -&gt; int, g -&gt; int
+
+&#x2F;&#x2F; 如果 auto 被引用修饰，那么表达式的 CV 限定将会被保留
+auto const &amp;h = a; &#x2F;&#x2F; auto -&gt; int, h -&gt; int const&amp;
+auto &amp;i = h; &#x2F;&#x2F; auto -&gt; const int, i -&gt; cosnt int&amp;
+auto *j = &amp;h; &#x2F;&#x2F; auto -&gt; const int, j -&gt; const int*
+</code></pre>
+<h2 id="decltype-de-tui-dao"><code>decltype</code> 的推导</h2>
+<pre data-lang="c++" class="language-c++ "><code class="language-c++" data-lang="c++">const std::vector&lt;int&gt; v;
+auto a = v[0]；&#x2F;&#x2F; a -&gt; int
+decltype（v[0]) b = 0; &#x2F;&#x2F; b -&gt; const int&amp;
+
+int c = 0;
+decltype(c) d; &#x2F;&#x2F; d -&gt; int
+decltype((c)) e; &#x2F;&#x2F; e -&gt; int&amp;
+</code></pre>
+<p>大概就是 decltype 会反映里面表达式的类型，不会去掉对应的CV限定符。</p>
+<hr />
+<ul>
+<li>https://zh.wikipedia.org/wiki/C%2B%2B11#.E5.9E.8B.E5.88.A5.E6.8E.A8.E5.B0.8E</li>
+<li>https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers</li>
+</ul>
+
+  </div>
+  <div id="post-footer">
+    
+    
+    
+    
+    
+  </div>
+  <div id="bottom-btn">
+    
+    <a id="to-index" href="#post-index" title="index">≡</a>
+    
+    <a id="to-top" href="#post-title" title="to top">∧</a>
+  </div>
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+          this.page.url = "https://twistoy.com/posts/cpp11-type-derivation/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "cpp11-type-derivation"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+    (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://twistoy-1.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+  </script>
+
+</div>
+</article>
+      <aside>
+        <div id="about">
+          <a href="/" id="logo">
+            <img src="https://ak.hypergryph.com/assets/index/images/ak/pc/faction/1.png" alt="Logo" />
+          </a>
+          <h1 id="Dr">
+            <a target="_blank" rel="noopener" href="mailto:hawtian.wang@twistoy.cn">
+              Dr.TwIStOy
+            </a>
+          </h1>
+          <section id="total">
+            
+            <div id="total-archives">
+              <span class="total-title">Total Archives:</span>
+              <span class="total-number">40</span>
+            </div>
+            <div id="total-tags">
+                <span class="total-title">Tags:</span>
+                <span class="total-number">
+                  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+66
+
+                </span>
+            </div>
+            <div id="total-categories">
+              <span class="total-title">Categories:</span>
+              <span class="total-number">
+                
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+2
+
+              </span>
+            </div>
+          </section>
+        </div>
+        <div id="aside-block">
+          
+
+<h1>INDEX</h1>
+<div id="post-index">
+  
+
+<ol class="toc">
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#auto-de-ji-ben-shi-yong">
+    <span class="toc-number">1.</span>
+    <span class="toc-text"> auto 的基本使用</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-range-loop">
+    <span class="toc-number">&nbsp;1.1.</span>
+    <span class="toc-text"> for-range loop</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-range-loop-de-zhan-kai">
+    <span class="toc-number">&nbsp;&nbsp;1.1.1.</span>
+    <span class="toc-text"> for-range loop 的展开</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#auto-zhan-wei-fu-de-shi-yong">
+    <span class="toc-number">&nbsp;&nbsp;1.1.2.</span>
+    <span class="toc-text"> auto 占位符的使用</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-auto-x-m">
+    <span class="toc-number">&nbsp;&nbsp;&nbsp;1.1.2.1.</span>
+    <span class="toc-text"> for (auto x: m)</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-auto-x-m-1">
+    <span class="toc-number">&nbsp;&nbsp;&nbsp;1.1.2.2.</span>
+    <span class="toc-text"> for (auto&amp; x: m)</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-4">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-const-auto-x-m">
+    <span class="toc-number">&nbsp;&nbsp;&nbsp;1.1.2.3.</span>
+    <span class="toc-text"> for (const auto&amp; x: m)</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-3">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#for-auto-x-m-2">
+    <span class="toc-number">&nbsp;&nbsp;1.1.3.</span>
+    <span class="toc-text"> for (auto&amp;&amp; x: m)</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+<li class="toc-item toc-level-1">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#auto-he-decltype-de-tui-dao">
+    <span class="toc-number">2.</span>
+    <span class="toc-text"> auto 和 decltype 的推导</span>
+  </a>
+  
+
+<ol class="toc-child">
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#auto-de-tui-dao">
+    <span class="toc-number">&nbsp;2.1.</span>
+    <span class="toc-text"> auto 的推导</span>
+  </a>
+  
+
+
+</li>
+
+<li class="toc-item toc-level-2">
+  <a class="toc-link" href="https:&#x2F;&#x2F;twistoy.com&#x2F;posts&#x2F;cpp11-type-derivation&#x2F;#decltype-de-tui-dao">
+    <span class="toc-number">&nbsp;2.2.</span>
+    <span class="toc-text"> decltype 的推导</span>
+  </a>
+  
+
+
+</li>
+
+</ol>
+
+
+</li>
+
+</ol>
+
+
+</div>
+
+
+        </div>
+        <footer>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content">
+              <a href="http://www.beian.miit.gov.cn" target="_blank">黑 ICP 备 2020005142 号</a>
+            </span>
+          </nobr>
+          <nobr>
+            <span class="text-title">ICP</span>
+            <span class="text-content"> 
+              <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23011002000439">
+                <img src="/beian.png" style="float:left;"/>黑公网安备 23011002000439 号
+              </a>
+            </span>
+          </nobr>
+        </footer>
+      </aside>
+    </main>
+    <canvas id="canvas-dust"></canvas>
+    <script src="https://twistoy.com/js/arknights.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+	<!-- Math rendering -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+	
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87286014-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'UA-87286014-1');
+    </script>
+  
+</html>
